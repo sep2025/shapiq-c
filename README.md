@@ -18,7 +18,7 @@ Drei Varianten sollen implementiert werden:
   - Weighted KNN-Shapley (Wang et al. 2024)
 
 - **2. Conditional Data Imputers**: \
-mplementierung von zwei bedingten Imputationsmethoden (Aas et al. 2021, shapr Paper) zur Generierung fehlender Datenpunkte:
+Implementierung von zwei bedingten Imputationsmethoden (Aas et al. 2021, shapr Paper) zur Generierung fehlender Datenpunkte:
   - Gaussian Conditional Imputer: Bedingte Verteilung unter Annahme multivarater Normalverteilung
   - Gaussian Copula Conditional Imputer: Nutzung empirischer Ränder und einer gaußschen Kopula zur  Modellierung der Abhängigkeiten
 
