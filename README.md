@@ -46,16 +46,7 @@ Ziel ist es, die Koalitionen zu finden, die das vereinfachte Spiel maximieren od
 git clone https://github.com/sep2025/shapiq-c
 cd shapiq-c
 ``` 
-### 2. `.venv` aktivkeren und Abhängigkeiten installieren
-Eine virtuelle Umgebung ist notwendig, um Abhängigkeiten zu isolieren und Konflikte mit anderen Projekten zu vermeiden.
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate      # auf MacOS/Linux
-.venv\Scripts\activate         # auf Windows
-
-pip install -r requirements.txt   # TBD, falls nötig
-```
 
 ## 🔀 Branch-Regeln und Workflow
 
