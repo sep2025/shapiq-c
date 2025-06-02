@@ -47,6 +47,15 @@ git clone https://github.com/sep2025/shapiq-c
 cd shapiq-c
 ``` 
 
+### 2. `uv` installieren
+- `uv` ist ein Paketmanager, der die Installation und Synchronisation von Abhängigkeiten vereinfacht.
+- **Voraussetzung**: Python 3.10 oder höher
+
+```bash
+pip install uv
+uv sync
+```
+
 
 ## 🔀 Branch-Regeln und Workflow
 
@@ -68,3 +77,6 @@ Dieses Repositrory verwendet zwei Haupt-Branches:
 💡 **Empfehlung**:
 - Jeder sollte eingene Feature-Branches verwenden (z.B. `feature/knn-shapley`), um neue Funktionalitäten zu entwickeln und dann PRs in `dev` zu erstellen.
 - Sobald `dev` stabil ist, kann ein PR in `main` über einen Release-Branch mit Tag (z.B. `release/v1.0.0`) erstellt werden.
+
+## 📜 License
+Diese Projekt ist lizenziert unter: [MIT License](https://github.com/mmschlk/shapiq/blob/main/LICENSE).
