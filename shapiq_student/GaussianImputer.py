@@ -70,8 +70,7 @@ class GaussianImputer(Imputer):
             target_idx = np.setdiff1d(np.arange(self.n_players), cond_idx)
 
             if len(cond_idx) == 0 or len(target_idx) == 0:
-                # 모든 feature가 missing (empty coalition)
-                # Imputer 부모 클래스가 empty_prediction을 반환
+                # Wenn keine bedingten Features oder keine Ziel-Features vorhanden sind
                 print(
                     f"Skpping coalition: cond_idx={cond_idx}, target_idx={target_idx}"
                 )
