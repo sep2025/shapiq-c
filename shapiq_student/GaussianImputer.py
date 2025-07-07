@@ -22,12 +22,10 @@ class GaussianImputer(Imputer):
         - Behandelt Coalitions mit allen Features (keine Zielvariablen)
     """
 
-    def __init__(
-        self, model, data, x=None, sample_size=100, random_state=None, verbose=False
-    ):
+    def __init__(self, model, data, x=None, sample_size=100, random_state=None, verbose=False):
         """
-         __init__:
-            Initialisiert den Imputer mit den gegebenen Parametern.
+        __init__:
+           Initialisiert den Imputer mit den gegebenen Parametern.
         """
         print("Initializing GaussianImputer")
         super().__init__(
@@ -72,9 +70,7 @@ class GaussianImputer(Imputer):
 
             if len(cond_idx) == 0 or len(target_idx) == 0:
                 # Wenn keine bedingten Features oder keine Ziel-Features vorhanden sind
-                print(
-                    f"Skpping coalition: cond_idx={cond_idx}, target_idx={target_idx}"
-                )
+                print(f"Skpping coalition: cond_idx={cond_idx}, target_idx={target_idx}")
                 results.append(self.empty_prediction)
                 continue
 
@@ -145,9 +141,9 @@ class GaussianImputer(Imputer):
         # - Stichprobe aus der multivariaten Normalverteilung
         # ===========================================================
 
-        conditional_samples = multivariate_normal(mean=mu_cond, cov=sigma_cond, allow_singular=True).rvs(
-            size=n_samples, random_state=random_state
-        )
+        conditional_samples = multivariate_normal(
+            mean=mu_cond, cov=sigma_cond, allow_singular=True
+        ).rvs(size=n_samples, random_state=random_state)
         if conditional_samples.ndim == 1:
             conditional_samples = conditional_samples.reshape(1, -1)
         return conditional_samples, mu_cond, sigma_cond
