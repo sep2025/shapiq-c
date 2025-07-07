@@ -70,7 +70,7 @@ class GaussianImputer(Imputer):
 
             if len(cond_idx) == 0 or len(target_idx) == 0:
                 # Wenn keine bedingten Features oder keine Ziel-Features vorhanden sind
-                print(f"Skpping coalition: cond_idx={cond_idx}, target_idx={target_idx}")
+                print(f"Skipping coalition: cond_idx={cond_idx}, target_idx={target_idx}")
                 results.append(self.empty_prediction)
                 continue
 
