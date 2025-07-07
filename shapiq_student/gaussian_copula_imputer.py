@@ -1,13 +1,16 @@
 import numpy as np
 from scipy.stats import norm
+from shapiq.games.imputer.base import Imputer
+
 
 #ECDF: empirical cumulative distribution function
 
 
 
 
-class GaussianCopulaConditionalImputer:
+class GaussianCopulaImputer(Imputer):
     def __init__(self):
+        super().__init__()
         self.ecdfs = []  
         self.inverse_ecdfs = []      #Inverse ECDFs to og val
         self.transformed_data = None
