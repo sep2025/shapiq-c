@@ -5,10 +5,8 @@ from shapiq.games.imputer.base import Imputer
 
 class GaussianImputer(Imputer):
     """
-    GaussianImputer
-
+    GaussianImputer:
     Schätzt fehlende Werte mit einer bedingten multivariaten Normalverteilung.
-
     Erweiterung der Imputer-Klasse. Nutzt Hintergrunddaten als Referenz und kann fehlende Werte auf Basis von bekannten Features imputieren.
 
     Args:
@@ -19,20 +17,6 @@ class GaussianImputer(Imputer):
         random_state: Zufallszustand für Reproduzierbarkeit.
         verbose: Flag für ausführliche Ausgabe (Standardmäßig False).
 
-    Methods:
-        __init__: Initialisiert den Imputer mit den gegebenen Parametern.
-        fit: Speichert den Erklärungs-Punkt und bereitet den Imputer vor.
-        __call__:
-            Erwartet Coalition-Vektoren (binär).
-            Für jede Coalition:
-            - berechnet bedingte Normalverteilung.
-            - zieht Stichproben.
-            - wendet Modell an.
-            - gibt Mittelwert der Vorhersagen zurück.
-        sample_conditional_gaussian:
-            Berechnet bedingten Mittelwert und Kovarianzmatrix.
-            Zieht Stichproben aus der Verteilung.
-
     Special Notes:
         - Behandelt leere Coalitions (alle Feature unbekannt) mit empty_prediction.
         - Behandelt Coalitions mit allen Features (keine Zielvariablen)
@@ -41,6 +25,10 @@ class GaussianImputer(Imputer):
     def __init__(
         self, model, data, x=None, sample_size=100, random_state=None, verbose=False
     ):
+        """
+         __init__:
+            Initialisiert den Imputer mit den gegebenen Parametern.
+        """
         print("Initializing GaussianImputer")
         super().__init__(
             model,
@@ -54,6 +42,10 @@ class GaussianImputer(Imputer):
         self.cond_values = None
 
     def fit(self, x):
+        """
+        fit:
+            Speichert den Erklärungs-Punkt und bereitet den Imputer vor.
+        """
         print("Fit GaussianImputer")
         super().fit(x)
         self.cond_idx = None
@@ -61,6 +53,15 @@ class GaussianImputer(Imputer):
         return self
 
     def __call__(self, coalitions):
+        """
+        __call__:
+            Erwartet Coalition-Vektoren (binär).
+            Für jede Coalition:
+            - berechnet bedingte Normalverteilung.
+            - zieht Stichproben.
+            - wendet Modell an.
+            - gibt Mittelwert der Vorhersagen zurück.
+        """
         print("Calling GaussianImputer with coalitions:")
         results = []
 
@@ -102,6 +103,11 @@ class GaussianImputer(Imputer):
     def sample_conditional_gaussian(
         self, data, cond_idx, cond_values, n_samples=1, random_state=None
     ):
+        """
+        sample_conditional_gaussian:
+            Berechnet bedingten Mittelwert und Kovarianzmatrix.
+            Zieht Stichproben aus der Verteilung.
+        """
         print("Sampling conditional gaussian")
         data = np.asanyarray(data)
         cond_values = np.asanyarray(cond_values)
