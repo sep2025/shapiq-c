@@ -70,6 +70,10 @@ def beam_search_coalition(
     best = max(beam, key=lambda s: compute_value(s, explanation)) if maximize else min(beam, key=lambda s: compute_value(s, explanation))
     return best
 
+def recursive_greedy_coalition() -> set:
+    """Recursive greedy search for best coalition of size l."""
+    raise NotImplementedError("Tree search is not implemented yet.")
+
 def subset_finding(interaction_values, max_size: int) -> list:
     """Return all subsets of features up to given size as list of tuples."""
     n_players = interaction_values.n_players  # <- Fix hier

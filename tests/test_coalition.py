@@ -9,6 +9,7 @@ import csv
 import os
 
 def data():
+    """Generates interaction values for testing."""
     results = []
     for seed in [0, 1, 2]:
         random.seed(seed)
@@ -83,7 +84,7 @@ def test_subset(max_size, Interaction_values):
 
 
 # Test for beam_search_coalition
-"""Tests brute force, greedy, beam for max and min coalition and compares them"""
+"""Tests greedy, beam search for max and min coalition and compares them to brute force for results. Also times their runtime."""
 @pytest.mark.parametrize("max_size", [5, 6, 7, "n_players"])
 @pytest.mark.parametrize("Interaction_values", data())
 def test_beam_search(max_size, Interaction_values):
