@@ -1,6 +1,6 @@
-# shapiq_student/coalition_finder.py
 from typing import Dict, Set, FrozenSet, Any, List, Tuple
 from itertools import combinations
+import heapq
 
 def compute_value(S: Set[int], explanation: Dict[str, Any]) -> float:
     value = explanation.get('bias', 0.0)
@@ -47,14 +47,12 @@ def greedy_coalition(explanation: Dict[str, Any], l: int, maximize: bool = True)
 
     return selected
 
-import heapq
-
 def beam_search_coalition(
-    explanation: dict, l: int, beam_width: int = 100, maximize: bool = True
+    explanation: dict, l: int, beam_width: int = 100, maximize: bool = True #beam_width can be adjusted here
 ) -> set:
     """Beam Search for best coalition of size l."""
     N = list(explanation['nodes'].keys())
-    beam = [set()]  # Start with empty set
+    beam = [set()] 
 
     for _ in range(l):
         candidates = []

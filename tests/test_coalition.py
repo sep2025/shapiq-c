@@ -1,7 +1,7 @@
 import time
 import pytest
 from shapiq_student.subset_finding import brute_force
-from shapiq_student.coalition_finder import greedy_coalition, compute_value, subset_finding
+from shapiq_student.coalition_finder import greedy_coalition, compute_value, subset_finding, beam_search_coalition
 from shapiq import ExactComputer
 from shapiq.games.benchmark import SOUM
 import random
@@ -39,16 +39,15 @@ def test_subset(max_size, Interaction_values):
     single_values = Interaction_values.get_n_order_values(1)
     pairwise_values = Interaction_values.get_n_order_values(2)
     
-    # Create nodes dict: {feature_index: value}
+    
     nodes = {i: single_values[i] for i in range(len(single_values))}
     
-    # Create edges dict: {frozenset({i, j}): value}
+    
     edges = {}
     for i in range(len(pairwise_values)):
         for j in range(i+1, len(pairwise_values)):
             edges[frozenset({i, j})] = pairwise_values[i][j]
     
-    # For now, no higher-order interactions (order > 2)
     hyperedges = {}
     
     explanation_dict = {
@@ -84,8 +83,7 @@ def test_subset(max_size, Interaction_values):
 
 
 # Test for beam_search_coalition
-from shapiq_student.coalition_finder import beam_search_coalition
-
+"""Tests brute force, greedy, beam for max and min coalition and compares them"""
 @pytest.mark.parametrize("max_size", [5, 6, 7, "n_players"])
 @pytest.mark.parametrize("Interaction_values", data())
 def test_beam_search(max_size, Interaction_values):
@@ -147,14 +145,14 @@ def test_beam_search(max_size, Interaction_values):
     assert beam_max_value <= brute_max_value
     assert beam_min_value >= brute_min_value
 
-def write_results_to_csv(results, filename):
+def write_results_to_csv(results, filename): #makes csv to make comparison and analysis easier
     keys = results[0].keys()
     with open(filename, "w", newline="") as f:
         dict_writer = csv.DictWriter(f, fieldnames=keys)
         dict_writer.writeheader()
         dict_writer.writerows(results)
 
-def run_all_tests_multiple_times(num_runs=100):
+def run_all_tests_multiple_times(num_runs=100): #runs all tests multiple times. This was supposed to compare the algos with bigger sample size
     all_results = []
     for run in range(num_runs):
         for max_size in [5, 6, 7, "n_players"]:
