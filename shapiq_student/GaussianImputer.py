@@ -1,34 +1,48 @@
+"""GaussianImputer module.
+
+This module provides an imputer that fills in missing features by sampling from their conditional distribution, assuming the data is multivariate normal.
+
+This approach follows Aas et al. (2021), which showed that conditional Gaussian distributions can be used to impute missing values in a principled way.
+"""
+
+from __future__ import annotations
+
 import numpy as np
 from scipy.stats import multivariate_normal
 from shapiq.games.imputer.base import Imputer
 
 
 class GaussianImputer(Imputer):
-    """
-    ToDo: Translate DocStrings in English and format them better!
-    GaussianImputer:
-    Schätzt fehlende Werte mit einer bedingten multivariaten Normalverteilung.
-    Erweiterung der Imputer-Klasse. Nutzt Hintergrunddaten als Referenz und kann fehlende Werte auf Basis von bekannten Features imputieren.
+    """Imputes missing features assuming a conditional multivariate normal distribution.
+
+    This class extends the base Imputer and uses background data to fill in missing values for features in a data point.
+    It assumes that the data follows a multivariate normal distribution.
+    It works by conditioning on the known features and sampling the unknown ones accordingly.
 
     Args:
-        model: Modell, das Vorhersagen liefert.
-        data: Hintergrunddaten als 2D-Array (n_samples, n_features).
-        x: Expliziter Punk, der erklärt werden soll.
-        sample_size: Anzahl der zu ziehenden Proben. (Standardmäßig 100)
-        random_state: Zufallszustand für Reproduzierbarkeit.
-        verbose: Flag für ausführliche Ausgabe (Standardmäßig False).
+        model: A predictive model used to generate output values.
+        data: Background/reference data as a 2D array (n_samples, n_features).
+        x: The specific data point to explain, potentially with missing values.
+        sample_size: Number of samples to draw for estimation (default: 100).
+        random_state: Random seed for reproducibility (default: None).
+        verbose: If True, prints additional information during processing (default: False).
 
-    Special Notes:
-        - Behandelt leere Coalitions (alle Feature unbekannt) mit empty_prediction.
-        - Behandelt Coalitions mit allen Features (keine Zielvariablen)
+    Notes:
+        - Handles "empty" coalitions (all features unknown) using a pre-defined empty prediction.
+        - Supports "full" coalitions where no target variables remain.
     """
 
-    def __init__(self, model, data, x=None, sample_size=100, random_state=None, verbose=False):
-        """
-        __init__:
-           Initialisiert den Imputer mit den gegebenen Parametern.
-        """
-        print("Initializing GaussianImputer")
+    def __init__(
+        self,
+        model: object,
+        data: np.ndarray,
+        x: np.ndarray | None = None,
+        sample_size: int = 100,
+        random_state: int | None = None,
+        *,
+        verbose: bool = False,
+    ) -> None:
+        """Initializes the GaussianImputer."""
         super().__init__(
             model,
             data,
@@ -40,28 +54,36 @@ class GaussianImputer(Imputer):
         self.cond_idx = None
         self.cond_values = None
 
-    def fit(self, x):
+    def fit(self, x: np.ndarray) -> GaussianImputer:
+        """Fits the imputer to a specific data point `x`.
+
+        Stores the data point to be explained and rests any previous conditioning information.
+
+        Args:
+            x: The data point to explain.
+
+        Returns:
+            self: The fitted imputer instance.
         """
-        fit:
-            Speichert den Erklärungs-Punkt und bereitet den Imputer vor.
-        """
-        print("Fit GaussianImputer")
         super().fit(x)
         self.cond_idx = None
         self.cond_values = None
         return self
 
-    def __call__(self, coalitions):
+    def __call__(self, coalitions: np.ndarray) -> np.ndarray:
+        """Computes model predictions for given coalitions.
+
+        For each coalition:
+            - Samples missing features from the conditional Gaussian distribution.
+            - Uses the model to predict based on these samples.
+            - Returns the mean prediction for each coalition.
+
+        Args:
+            coalitions: List or array of binary vectors indication known features for each coalition.
+
+        Returns:
+            numpy.ndarray: Array of mean predictions for each coalition.
         """
-        __call__:
-            Erwartet Coalition-Vektoren (binär).
-            Für jede Coalition:
-            - berechnet bedingte Normalverteilung.
-            - zieht Stichproben.
-            - wendet Modell an.
-            - gibt Mittelwert der Vorhersagen zurück.
-        """
-        print("Calling GaussianImputer with coalitions:")
         results = []
 
         for coalition in coalitions:
@@ -71,7 +93,6 @@ class GaussianImputer(Imputer):
 
             if len(cond_idx) == 0 or len(target_idx) == 0:
                 # Coalition is empty or has no target variables
-                print(f"Skipping coalition: cond_idx={cond_idx}, target_idx={target_idx}")
                 results.append(self.empty_prediction)
                 continue
 
@@ -98,13 +119,32 @@ class GaussianImputer(Imputer):
         return np.array(results)
 
     def sample_conditional_gaussian(
-        self, data, cond_idx, cond_values, n_samples=1, random_state=None
-    ):
-        """
-        sample_conditional_gaussian:
-            Computes the conditional mean (μ_{S̄|S}) and conditional covariance (Σ_{S̄|S})
-            of a multivariate normal distribution given conditioning variables.
-            Draws samples from the resulting conditional distribution.
+        self,
+        data: np.ndarray,
+        cond_idx: np.ndarray,
+        cond_values: np.ndarray,
+        n_samples: int = 1,
+        random_state: int | None = None,
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """Samples from the conditional multivariate normal distribution.
+
+        Computes the conditional mean and covariance given known features, then draws samples for the unknown features accordingly.
+
+        Args:
+            data: Background data as a 2D array.
+            cond_idx: Indices of the known (conditional) features.
+            cond_values: The known feature values for conditional features.
+            n_samples: Number of samples to draw (default: 1).
+            random_state: Seed for reproducibility (default: None).
+
+        Returns:
+            tuple:
+            - conditional_samples (np.ndarray): Samples from the conditional distribution.
+            - mu_cond (np.ndarray): Conditional mean vector.
+            - sigma_cond (np.ndarray): Conditional covariance matrix.
+
+        Notes:
+            - Uses the formulas from Aas et al.(2021), Equation (10) and (11) for conditional Gaussian distributions.
         """
         data = np.asanyarray(data)
         cond_values = np.asanyarray(cond_values)

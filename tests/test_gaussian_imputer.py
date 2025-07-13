@@ -1,4 +1,9 @@
+"""Tests for the GaussianImputer class."""
+
+from __future__ import annotations
+
 import numpy as np
+
 from shapiq_student.GaussianImputer import GaussianImputer
 
 
@@ -21,9 +26,9 @@ def dummy_model(x: np.ndarray) -> np.ndarray:
 
 def test_init_gaussian_imputer():
     """Test init method of the GaussianImputer class."""
-
     # Testdata
-    data = np.random.rand(100, 5)
+    rng = np.random.default_rng(42)
+    data = rng.random((100, 5))
     sample_size = 100
     random_state = 123
     verbose = True
@@ -50,10 +55,9 @@ def test_init_gaussian_imputer():
 
 def test_fit_gaussian_imputer():
     """Test fit method of the GaussianImputer class."""
-
     # Testdata and explanation point
-    data = np.random.rand(100, 5)
-    np.random.seed(42)
+    rng = np.random.default_rng(42)
+    data = rng.random((100, 5))
     x_explain = np.array([[0.1, 0.2, -0.3, 0.4, -0.5]])
 
     # Imputer-Instance
@@ -82,15 +86,14 @@ def test_fit_gaussian_imputer():
 
 def test_call_gaussian_imputer():
     """Test call method of the GaussianImputer class."""
-
-    # Testdaten
-    data = np.random.rand(100, 5)
+    # Testdata
+    rng = np.random.default_rng(42)
+    data = rng.random((100, 5))
     sample_size = 100
     random_state = 123
     verbose = True
     n_features = 5
     n_coalitions = 10
-    np.random.seed(42)
 
     # Imputer-Instance
     imputer = GaussianImputer(
@@ -101,18 +104,18 @@ def test_call_gaussian_imputer():
         verbose=verbose,
     )
 
-    # Erklärungspunkt
-    data = np.random.rand(1000, n_features)
-    x_explain = np.random.randn(1, n_features)
+    # Explanation point
+    rng = np.random.default_rng(42)
+    data = rng.random((1000, n_features))
+    x_explain = rng.standard_normal((1, n_features))
     imputer.fit(x_explain)
 
     # Test-Coalitions
-    coalitions = np.random.randint(0, 2, size=(n_coalitions, n_features))
+    coalitions = rng.integers(0, 2, size=(n_coalitions, n_features))
 
-    # call-Methode aufrufen
+    # Check if the GaussianImputer can be called with coalitions
     output = imputer(coalitions=coalitions)
 
-    # Überprüfen der Ausgabe
     assert isinstance(output, np.ndarray), "Output should be a numpy array."
     assert output.shape == (n_coalitions,), f"Output shape should be ({n_coalitions},)."
     assert np.all(np.isfinite(output)), "Output should be finite."
@@ -121,12 +124,11 @@ def test_call_gaussian_imputer():
 
 def test_sample_conditional_gaussian():
     """Test sample_conditional_gaussian method of the GaussianImputer class."""
-
     # Testdata
-    np.random.seed(0)
+    rng = np.random.default_rng(0)
     mean = [0, 0, 0]
     cov = [[1, 0.8, 0.5], [0.8, 1, 0.3], [0.5, 0.3, 1]]
-    sample_data = np.random.multivariate_normal(mean, cov, size=10000)
+    sample_data = rng.multivariate_normal(mean, cov, size=10000)
 
     # Conditional Index and Values
     cond_idx = [0]
@@ -134,7 +136,9 @@ def test_sample_conditional_gaussian():
 
     n_samples = 10000
 
-    imputer = GaussianImputer(model=dummy_model, data=sample_data, sample_size=n_samples)
+    imputer = GaussianImputer(
+        model=dummy_model, data=sample_data, sample_size=n_samples
+    )
     samples, mu_cond, sigma_cond = imputer.sample_conditional_gaussian(
         sample_data, cond_idx, cond_values, n_samples=n_samples, random_state=123
     )
