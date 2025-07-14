@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tests.test_gaussian_imputer &#8212; shapiq-c 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../_static/documentation_options.js?v=2709fde1"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for tests.test_gaussian_imputer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Tests for the GaussianImputer class.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">shapiq_student.GaussianImputer</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianImputer</span>
+
+
+<span class="c1"># copied from tests_grading/test_imputer.py</span>
+<div class="viewcode-block" id="dummy_model">
+<a class="viewcode-back" href="../../tests.html#tests.test_gaussian_imputer.dummy_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dummy_model</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A dummy model that returns the sum of the features.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        This callable is just here that we satisfy the Imputer&#39;s model parameter and tha we can</span>
+<span class="sd">        check if the Imputer can be called with coalitions and returns a vector of &quot;predictions&quot;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: Input data as a 2D numpy array with shape (n_samples, n_features).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A 1D numpy array with the sum of the features for each sample.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="test_init_gaussian_imputer">
+<a class="viewcode-back" href="../../tests.html#tests.test_gaussian_imputer.test_init_gaussian_imputer">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_init_gaussian_imputer</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test init method of the GaussianImputer class.&quot;&quot;&quot;</span>
+    <span class="c1"># Testdata</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">sample_size</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">random_state</span> <span class="o">=</span> <span class="mi">123</span>
+    <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Imputer-Instance</span>
+    <span class="n">imputer</span> <span class="o">=</span> <span class="n">GaussianImputer</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">dummy_model</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">sample_size</span><span class="o">=</span><span class="n">sample_size</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Checking the instance and attributes</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">imputer</span><span class="p">,</span> <span class="n">GaussianImputer</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">imputer</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="n">dummy_model</span>
+    <span class="k">assert</span> <span class="n">imputer</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="s2">&quot;Data shape should be (100, 5).&quot;</span>
+    <span class="k">assert</span> <span class="n">imputer</span><span class="o">.</span><span class="n">sample_size</span> <span class="o">==</span> <span class="n">sample_size</span><span class="p">,</span> <span class="s2">&quot;Sample size should be 100.&quot;</span>
+    <span class="k">assert</span> <span class="n">imputer</span><span class="o">.</span><span class="n">random_state</span> <span class="o">==</span> <span class="n">random_state</span><span class="p">,</span> <span class="s2">&quot;Random state should be 123.&quot;</span>
+    <span class="k">assert</span> <span class="n">imputer</span><span class="o">.</span><span class="n">verbose</span> <span class="o">==</span> <span class="n">verbose</span><span class="p">,</span> <span class="s2">&quot;Verbose should be True.&quot;</span>
+    <span class="k">assert</span> <span class="n">imputer</span><span class="o">.</span><span class="n">cond_idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;cond_idx should be None initially.&quot;</span>
+    <span class="k">assert</span> <span class="n">imputer</span><span class="o">.</span><span class="n">cond_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;cond_values should be None initially.&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="test_fit_gaussian_imputer">
+<a class="viewcode-back" href="../../tests.html#tests.test_gaussian_imputer.test_fit_gaussian_imputer">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_fit_gaussian_imputer</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test fit method of the GaussianImputer class.&quot;&quot;&quot;</span>
+    <span class="c1"># Testdata and explanation point</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">x_explain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">]])</span>
+
+    <span class="c1"># Imputer-Instance</span>
+    <span class="n">imputer</span> <span class="o">=</span> <span class="n">GaussianImputer</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">dummy_model</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">sample_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Checking initial state</span>
+    <span class="k">assert</span> <span class="n">imputer</span><span class="o">.</span><span class="n">cond_idx</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="k">assert</span> <span class="n">imputer</span><span class="o">.</span><span class="n">cond_values</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="k">assert</span> <span class="n">imputer</span><span class="o">.</span><span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span>
+
+    <span class="c1"># Fit the imputer with the explanation point</span>
+    <span class="n">imputer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_explain</span><span class="p">)</span>
+
+    <span class="c1"># Checking the state after fit</span>
+    <span class="k">assert</span> <span class="n">imputer</span><span class="o">.</span><span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;x should be set after fit.&quot;</span>
+    <span class="k">assert</span> <span class="n">imputer</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">imputer</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">x_explain</span><span class="p">),</span> <span class="s2">&quot;x should match the explanation point.&quot;</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">imputer</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">x_explain</span><span class="p">),</span> <span class="s2">&quot;x should match the explanation point.&quot;</span>
+
+    <span class="c1"># Checking after fit</span>
+    <span class="k">assert</span> <span class="n">imputer</span><span class="o">.</span><span class="n">cond_idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;cond_idx should be set after fit.&quot;</span>
+    <span class="k">assert</span> <span class="n">imputer</span><span class="o">.</span><span class="n">cond_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;cond_values should be set after fit.&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="test_call_gaussian_imputer">
+<a class="viewcode-back" href="../../tests.html#tests.test_gaussian_imputer.test_call_gaussian_imputer">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_call_gaussian_imputer</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test call method of the GaussianImputer class.&quot;&quot;&quot;</span>
+    <span class="c1"># Testdata</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">sample_size</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">random_state</span> <span class="o">=</span> <span class="mi">123</span>
+    <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">n_features</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">n_coalitions</span> <span class="o">=</span> <span class="mi">10</span>
+
+    <span class="c1"># Imputer-Instance</span>
+    <span class="n">imputer</span> <span class="o">=</span> <span class="n">GaussianImputer</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">dummy_model</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">sample_size</span><span class="o">=</span><span class="n">sample_size</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Explanation point</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">1000</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
+    <span class="n">x_explain</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
+    <span class="n">imputer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_explain</span><span class="p">)</span>
+
+    <span class="c1"># Test-Coalitions</span>
+    <span class="n">coalitions</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n_coalitions</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
+
+    <span class="c1"># Check if the GaussianImputer can be called with coalitions</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">imputer</span><span class="p">(</span><span class="n">coalitions</span><span class="o">=</span><span class="n">coalitions</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">),</span> <span class="s2">&quot;Output should be a numpy array.&quot;</span>
+    <span class="k">assert</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">n_coalitions</span><span class="p">,),</span> <span class="sa">f</span><span class="s2">&quot;Output shape should be (</span><span class="si">{</span><span class="n">n_coalitions</span><span class="si">}</span><span class="s2">,).&quot;</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">output</span><span class="p">)),</span> <span class="s2">&quot;Output should be finite.&quot;</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">),</span> <span class="s2">&quot;Output should be numeric.&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="test_sample_conditional_gaussian">
+<a class="viewcode-back" href="../../tests.html#tests.test_gaussian_imputer.test_sample_conditional_gaussian">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_sample_conditional_gaussian</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test sample_conditional_gaussian method of the GaussianImputer class.&quot;&quot;&quot;</span>
+    <span class="c1"># Testdata</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">cov</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+    <span class="n">sample_data</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">cov</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+
+    <span class="c1"># Conditional Index and Values</span>
+    <span class="n">cond_idx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">cond_values</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">]</span>
+
+    <span class="n">n_samples</span> <span class="o">=</span> <span class="mi">10000</span>
+
+    <span class="n">imputer</span> <span class="o">=</span> <span class="n">GaussianImputer</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">dummy_model</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">sample_data</span><span class="p">,</span> <span class="n">sample_size</span><span class="o">=</span><span class="n">n_samples</span>
+    <span class="p">)</span>
+    <span class="n">samples</span><span class="p">,</span> <span class="n">mu_cond</span><span class="p">,</span> <span class="n">sigma_cond</span> <span class="o">=</span> <span class="n">imputer</span><span class="o">.</span><span class="n">sample_conditional_gaussian</span><span class="p">(</span>
+        <span class="n">sample_data</span><span class="p">,</span> <span class="n">cond_idx</span><span class="p">,</span> <span class="n">cond_values</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Calculate empirical mean and covariance</span>
+    <span class="n">empirical_mean</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">empirical_cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">rowvar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Validate empirical mean against theoretical conditional mean</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">empirical_mean</span><span class="p">,</span> <span class="n">mu_cond</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+
+    <span class="c1"># Validate empirical covariance against theoretical conditional covariance</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">empirical_cov</span><span class="p">,</span> <span class="n">sigma_cond</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">shapiq-c</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">shapiq_student</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests.html">tests package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests_grading.html">tests_grading package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Heeso Park.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
