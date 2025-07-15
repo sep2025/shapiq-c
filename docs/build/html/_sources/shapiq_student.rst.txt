@@ -4,6 +4,14 @@ shapiq\_student package
 Submodules
 ----------
 
+shapiq\_student.GaussianCopulaImputer module
+--------------------------------------------
+
+.. automodule:: shapiq_student.GaussianCopulaImputer
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 shapiq\_student.GaussianImputer module
 --------------------------------------
 
@@ -12,10 +20,26 @@ shapiq\_student.GaussianImputer module
    :show-inheritance:
    :undoc-members:
 
-shapiq\_student.gaussian\_copula module
----------------------------------------
+shapiq\_student.KNNExplainer1 module
+------------------------------------
 
-.. automodule:: shapiq_student.gaussian_copula
+.. automodule:: shapiq_student.KNNExplainer1
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+shapiq\_student.KNNExplainer3 module
+------------------------------------
+
+.. automodule:: shapiq_student.KNNExplainer3
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+shapiq\_student.coalition\_finder module
+----------------------------------------
+
+.. automodule:: shapiq_student.coalition_finder
    :members:
    :show-inheritance:
    :undoc-members:
@@ -24,6 +48,14 @@ shapiq\_student.subset\_finding module
 --------------------------------------
 
 .. automodule:: shapiq_student.subset_finding
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+shapiq\_student.threshold\_knn\_shapley\_explainer module
+---------------------------------------------------------
+
+.. automodule:: shapiq_student.threshold_knn_shapley_explainer
    :members:
    :show-inheritance:
    :undoc-members:

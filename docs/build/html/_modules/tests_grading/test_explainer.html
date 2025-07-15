@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html  lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>tests_grading.test_explainer</title>
+    
+          <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="../../_static/theme.css " type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="../../_static/theme-vendors.js"></script> -->
+      <script src="../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../genindex.html" />
+  <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../index.html" class="home-link">
+    
+      <span class="site-name">shapiq-c</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../index.html#license">Contents</a></span>
+      </p>
+      <ul class="">
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../shapiq_student.html" class="reference internal ">shapiq_student package</a>
+            
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../tests.html" class="reference internal ">tests package</a>
+            
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../tests_grading.html" class="reference internal ">tests_grading package</a>
+            
+
+            
+          </li>
+
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../index.html">Module code</a> &raquo;</li>
+    
+    <li>tests_grading.test_explainer</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <h1>Source code for tests_grading.test_explainer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Example test case for the Explainer class.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">shapiq</span><span class="w"> </span><span class="kn">import</span> <span class="n">Explainer</span><span class="p">,</span> <span class="n">InteractionValues</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">KNeighborsClassifier</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">shapiq_student</span><span class="w"> </span><span class="kn">import</span> <span class="n">KNNExplainer</span>
+
+<span class="n">DATA_DIM</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># number of dimensions in the KNNExplainer&#39;s data parameter expects</span>
+<span class="n">LABELS_DIM</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># number of dimensions in the KNNExplainer&#39;s labels parameter expects</span>
+
+
+<div class="viewcode-block" id="TestExplainer">
+<a class="viewcode-back" href="../../tests_grading.html#tests_grading.test_explainer.TestExplainer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TestExplainer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Tests for the KNNExplainer class.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TestExplainer.test_is_explainer_class">
+<a class="viewcode-back" href="../../tests_grading.html#tests_grading.test_explainer.TestExplainer.test_is_explainer_class">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_is_explainer_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if KNNExplainer is a subclass of shapiq&#39;s Explainer.&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">KNNExplainer</span><span class="p">,</span> <span class="n">Explainer</span><span class="p">),</span> <span class="s2">&quot;KNNExplainer should be subclass of Explainer.&quot;</span></div>
+
+
+<div class="viewcode-block" id="TestExplainer.test_init">
+<a class="viewcode-back" href="../../tests_grading.html#tests_grading.test_explainer.TestExplainer.test_init">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">knn_basic</span><span class="p">,</span> <span class="n">data_test</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the initialization of KNNExplainer.&quot;&quot;&quot;</span>
+        <span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">data_test</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">knn_basic</span><span class="p">,</span> <span class="n">KNeighborsClassifier</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_test</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="n">DATA_DIM</span><span class="p">,</span> <span class="s2">&quot;KNNExplainer data should be a 2D numpy array.&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="n">LABELS_DIM</span><span class="p">,</span> <span class="s2">&quot;KNNExplainer labels should be a 1D numpy array.&quot;</span>
+        <span class="n">explainer</span> <span class="o">=</span> <span class="n">KNNExplainer</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">knn_basic</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">x_test</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">y_test</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">explainer</span><span class="p">,</span> <span class="n">KNNExplainer</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">explainer</span><span class="p">,</span> <span class="n">Explainer</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">explainer</span><span class="o">.</span><span class="n">max_order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;We only expect Shapley value so this has to be 1.&quot;</span>
+        <span class="k">assert</span> <span class="n">explainer</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="s2">&quot;SV&quot;</span><span class="p">,</span> <span class="s2">&quot;Index should always be SV.&quot;</span></div>
+
+
+<div class="viewcode-block" id="TestExplainer.test_explain_function">
+<a class="viewcode-back" href="../../tests_grading.html#tests_grading.test_explainer.TestExplainer.test_explain_function">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_explain_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">knn_basic</span><span class="p">,</span> <span class="n">data_test</span><span class="p">,</span> <span class="n">x_explain</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the explain function of KNNExplainer works.&quot;&quot;&quot;</span>
+        <span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">data_test</span>
+        <span class="n">n_features</span> <span class="o">=</span> <span class="n">x_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">explainer</span> <span class="o">=</span> <span class="n">KNNExplainer</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">knn_basic</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">x_test</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">y_test</span><span class="p">)</span>
+        <span class="c1"># Note: here we intentionally use the Explainer.explain function and not the KNNExplainer&#39;s</span>
+        <span class="c1"># internal explain_function method to also ensure consistency in the interface.</span>
+        <span class="n">explanation</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x_explain</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">explanation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Explanation should not be None.&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">explanation</span><span class="p">,</span> <span class="n">InteractionValues</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">explanation</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="s2">&quot;SV&quot;</span><span class="p">,</span> <span class="s2">&quot;Index of the explanation should be SV.&quot;</span>
+        <span class="k">assert</span> <span class="n">explanation</span><span class="o">.</span><span class="n">max_order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Max order should be 1 for KNNExplainer.&quot;</span>
+        <span class="k">assert</span> <span class="n">explanation</span><span class="o">.</span><span class="n">n_players</span> <span class="o">==</span> <span class="n">n_features</span><span class="p">,</span> <span class="s2">&quot;Number of players should be n_features.&quot;</span></div>
+
+
+<div class="viewcode-block" id="TestExplainer.test_different_model_types">
+<a class="viewcode-back" href="../../tests_grading.html#tests_grading.test_explainer.TestExplainer.test_different_model_types">[docs]</a>
+    <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+        <span class="p">(</span><span class="s2">&quot;model_name&quot;</span><span class="p">,</span> <span class="s2">&quot;expected_mode&quot;</span><span class="p">),</span>
+        <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;knn_basic&quot;</span><span class="p">,</span> <span class="s2">&quot;normal&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;knn_weighted&quot;</span><span class="p">,</span> <span class="s2">&quot;weighted&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;knn_radius&quot;</span><span class="p">,</span> <span class="s2">&quot;threshold&quot;</span><span class="p">),</span>
+        <span class="p">],</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_different_model_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">expected_mode</span><span class="p">,</span> <span class="n">data_test</span><span class="p">,</span> <span class="n">x_explain</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if KNNExplainer works with different model types.&quot;&quot;&quot;</span>
+        <span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">data_test</span>
+        <span class="c1"># get fixture by name</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">getfixturevalue</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
+        <span class="n">n_features</span> <span class="o">=</span> <span class="n">x_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">explainer</span> <span class="o">=</span> <span class="n">KNNExplainer</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">x_test</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">y_test</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">explainer</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">expected_mode</span>  <span class="c1"># check if the KNNExplainer sets a mode correctly</span>
+        <span class="n">explanation</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x_explain</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">explanation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Explanation should not be None.&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">explanation</span><span class="p">,</span> <span class="n">InteractionValues</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">explanation</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="s2">&quot;SV&quot;</span><span class="p">,</span> <span class="s2">&quot;Index of the explanation should be SV.&quot;</span>
+        <span class="k">assert</span> <span class="n">explanation</span><span class="o">.</span><span class="n">max_order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Max order should be 1 for KNNExplainer.&quot;</span>
+        <span class="k">assert</span> <span class="n">explanation</span><span class="o">.</span><span class="n">n_players</span> <span class="o">==</span> <span class="n">n_features</span><span class="p">,</span> <span class="s2">&quot;Number of players should be n_features.&quot;</span></div>
+
+
+<div class="viewcode-block" id="TestExplainer.test_class_index">
+<a class="viewcode-back" href="../../tests_grading.html#tests_grading.test_explainer.TestExplainer.test_class_index">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_class_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">knn_basic_multiclass</span><span class="p">,</span> <span class="n">data_test_multiclass</span><span class="p">,</span> <span class="n">x_explain_multiclass</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if KNNExplainer works with multiclass classification by specifying a class index.&quot;&quot;&quot;</span>
+        <span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">data_test_multiclass</span>
+
+        <span class="c1"># get the class with highest probability</span>
+        <span class="n">predicted_class</span> <span class="o">=</span> <span class="n">knn_basic_multiclass</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_explain_multiclass</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">proba</span> <span class="o">=</span> <span class="n">knn_basic_multiclass</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_explain_multiclass</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="n">predicted_class</span><span class="p">]</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;KNN (Multiclass) model predicted class: </span><span class="si">{</span><span class="n">predicted_class</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;with probability: </span><span class="si">{</span><span class="n">proba</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+        <span class="c1"># make explanation for the predicted class</span>
+        <span class="n">explainer</span> <span class="o">=</span> <span class="n">KNNExplainer</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">knn_basic_multiclass</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">x_test</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">y_test</span><span class="p">,</span> <span class="n">class_index</span><span class="o">=</span><span class="n">predicted_class</span>
+        <span class="p">)</span>
+        <span class="n">explanation_pred_class</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x_explain_multiclass</span><span class="p">)</span>
+        <span class="n">explanation_pred_class_second</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x_explain_multiclass</span><span class="p">)</span>
+
+        <span class="c1"># make explanation for different class and check if it is different</span>
+        <span class="n">other_class_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">explainer</span> <span class="o">=</span> <span class="n">KNNExplainer</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">knn_basic_multiclass</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">x_test</span><span class="p">,</span>
+            <span class="n">labels</span><span class="o">=</span><span class="n">y_test</span><span class="p">,</span>
+            <span class="n">class_index</span><span class="o">=</span><span class="n">other_class_index</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">explanation_other_class</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x_explain_multiclass</span><span class="p">)</span>
+
+        <span class="c1"># check that explanations are not the same</span>
+        <span class="k">assert</span> <span class="n">explanation_pred_class</span> <span class="o">!=</span> <span class="n">explanation_other_class</span>
+        <span class="k">assert</span> <span class="n">explanation_pred_class_second</span> <span class="o">!=</span> <span class="n">explanation_other_class</span>
+        <span class="k">assert</span> <span class="n">explanation_pred_class</span> <span class="o">==</span> <span class="n">explanation_pred_class_second</span><span class="p">,</span> <span class="p">(</span>
+            <span class="s2">&quot;Explanations for the same input and class should be equal.&quot;</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2025, Heeso Park.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.9.1.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>
