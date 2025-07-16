@@ -1,6 +1,13 @@
 """Source code for the shapiq_student package."""
-from .GaussianCopulaImputer import GaussianCopulaImputer
+
+from .basic_knn_explainer import KNNExplainer as BasicKNNExplainer
 from .GaussianImputer import GaussianImputer
-from .KNNExplainer1 import KNNExplainer
-from .KNNExplainer3 import KNNExplainer
 from .subset_finding import subset_finding
+from .weighted_knn_explainer import KNNExplainer as WeightedKNNExplainer
+
+__all__ = [
+    "BasicKNNExplainer",
+    "WeightedKNNExplainer",
+    "GaussianImputer",
+    "subset_finding",
+]
