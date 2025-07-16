@@ -12,5 +12,4 @@ This documentation provides an overview of the [Github repository](https://githu
 
 shapiq_student
 tests
-tests_grading
 ```
