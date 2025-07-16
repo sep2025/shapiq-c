@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from shapiq_student.GaussianImputer import GaussianImputer
+from shapiq_student.gaussian_imputer import GaussianImputer
 
 
 # copied from tests_grading/test_imputer.py
