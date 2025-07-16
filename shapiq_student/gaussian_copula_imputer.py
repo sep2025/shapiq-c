@@ -6,7 +6,7 @@ from scipy.stats import norm
 
 
 
-class GaussianCopulaConditionalImputer:
+class GaussianCopulaImputer:
     def __init__(self):
         self.ecdfs = []  
         self.inverse_ecdfs = []      #Inverse ECDFs to og val
