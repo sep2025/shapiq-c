@@ -1,7 +1,7 @@
 # [SEP_SoSe2025 / Gruppe C] Game Theoretic Explainable Artificial Intelligence
 
-Welcome to the shapiq-c project!
-This documentation provides an overview of the [Github repository](https://github.com/sep2025/shapiq-c).
+Herzlich Willkommen beim `shapiq-c` Projekt!
+In dieser Dokumentation finden Sie eine Übersicht über das [Github repository](https://github.com/sep2025/shapiq-c).
 
 ```{include} ../../README.md
 ```
@@ -10,6 +10,5 @@ This documentation provides an overview of the [Github repository](https://githu
 :maxdepth: 5
 :caption: Contents
 
-shapiq_student
-tests
+modules
 ```
