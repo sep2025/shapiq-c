@@ -53,5 +53,5 @@ html_theme = "furo"
 html_static_path = ["_static"]
 html_logo = "_static/SEP_Logo.png"
 autodoc_typehints = "description"
-html_title = "Gruppe C: Game Theoretic Explainable Artifical Intelligence (SoSe 2025)"
+html_title = "[SEP_SoSe2025 / Gruppe C] Game Theoretic Explainable Artificial Intelligence"
 html_short_title = "shapiq-c"
