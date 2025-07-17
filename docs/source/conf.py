@@ -1,32 +1,34 @@
-# Configuration file for the Sphinx documentation builder.
+"""Configuration file for the Sphinx documentation builder."""
 #
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-import os
+from __future__ import annotations
+
+from pathlib import Path
 import sys
 
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-print(f"[DEBUG] sys.path added: {PROJECT_ROOT}")
-sys.path.insert(0, PROJECT_ROOT)
+# It only works if conf.py is run from the docs/source directory.
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-project = 'shapiq-c'
-copyright = '2025, Heeso Park'
-author = 'Heeso Park'
-release = '0.0.1'
+
+project = "shapiq-c"
+copyright_ = "2025, Heeso Park"
+author = "Heeso Park"
+release = "0.0.1"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.ifconfig',
-    'sphinx.ext.githubpages',
-    'myst_parser',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.ifconfig",
+    "sphinx.ext.githubpages",
+    "myst_parser",
 ]
 
 myst_enable_extensions = [
@@ -39,7 +41,7 @@ myst_enable_extensions = [
 ]
 
 
-templates_path = ['_templates']
+templates_path = ["_templates"]
 exclude_patterns = []
 
 
@@ -47,6 +49,9 @@ exclude_patterns = []
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'furo'
-html_static_path = ['_static']
-autodoc_typehints = 'description'
+html_theme = "furo"
+html_static_path = ["_static"]
+html_logo = "_static/SEP_Logo.png"
+autodoc_typehints = "description"
+html_title = "Gruppe C: Game Theoretic Explainable Artifical Intelligence (SoSe 2025)"
+html_short_title = "shapiq-c"
