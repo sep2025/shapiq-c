@@ -1,36 +1,61 @@
 import numpy as np
-from scipy.stats import norm
+from scipy.stats import norm, multivariate_normal
+#from scipy.stats import multivariate_normal
+from shapiq.games.imputer.base import Imputer
+
+
 
 #ECDF: empirical cumulative distribution function
 
 
 
 
-class GaussianCopulaConditionalImputer:
-    def __init__(self):
+class GaussianCopulaImputer(Imputer):
+    """
+    An imputer that uses Gaussian copula to impute missing values.
+    It transforms the data into Gaussian space using empirical cumulative distribution functions (ECDFs).
+    and uses conditional Gaussian distributions to impute missing values.
+    """
+    def __init__(self, model = None, data=None, x= None):
+        """
+        Initializes the imputer with a model and data and a reference instance x.
+        Args:
+            model: A prediction model. for example a regression model that takes a 2D array as input and returns a 1D array.
+        """
+        super().__init__(model=model, data=data)
+        self._x_internal = x
         self.ecdfs = []  
         self.inverse_ecdfs = []      #Inverse ECDFs to og val
         self.transformed_data = None
         self.correlation = None      #Correlation matrix
 
+    @property
+    def x(self):
+        
+        
+        return self._x_internal
+
     
     
     
     
-    def fit(self, X: np.ndarray):
+    def fit(self,  x: np.ndarray):
         """
         Preps Imputer by transforming the data into Gaussian space
         using ECDFs and storing the correlation
         """
-        X = np.asarray(X)
-        n, d = X.shape
+        self._x_internal = x
+        x = np.asarray(x)
+        n, d = x.shape
         self.ecdfs = []
         self.inverse_ecdfs = []
-        z_data = np.zeros_like(X)
+        z_data = np.zeros_like(x)
 
         for j in range(d):
-            col = X[:, j]
+            col = x[:, j]
             sorted_col = np.sort(col)
+
+
 
             #ECDF
             def ecdf_func(x, sorted_col=sorted_col):
@@ -46,13 +71,22 @@ class GaussianCopulaConditionalImputer:
             self.inverse_ecdfs.append(inverse_ecdf_func)
 
             #Convert to z-score
+            #u = np.array([ecdf_func(xi) for xi in col])
+            #z = norm.ppf(u)
+            #z_data[:, j] = z
+
             u = np.array([ecdf_func(xi) for xi in col])
+            u = np.clip(u, 1e-6, 1 - 1e-6)  #this avoids infs
             z = norm.ppf(u)
             z_data[:, j] = z
 
         #Store transformed data and correlation matrix
         self.transformed_data = z_data
-        self.correlation = np.corrcoef(z_data, rowvar=False)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            corr = np.corrcoef(z_data, rowvar=False)
+            corr = np.nan_to_num(corr, nan=0.0, posinf=0.0, neginf=0.0)
+
+        self.correlation = corr
 
         
         
@@ -99,7 +133,7 @@ class GaussianCopulaConditionalImputer:
         z_barS_cond_cov = Sigma_barS_barS - Sigma_barS_S @ inv_Sigma_SS @ Sigma_S_barS
 
         #Sample from conditional distribution
-        z_missing = multivariate_normal(mean=z_barS_cond_mean, cov=z_barS_cond_cov).rvs()
+        z_missing = multivariate_normal(mean=z_barS_cond_mean, cov=z_barS_cond_cov, allow_singular=True).rvs()
 
         #If one value is missing then put it in a list
         if len(missing_idx) == 1:
@@ -115,3 +149,27 @@ class GaussianCopulaConditionalImputer:
             x_missing.append(x_val)
 
         return np.array(x_missing) 
+    
+    def value_function(self, coalitions: np.ndarray) -> np.ndarray:
+        """
+        Evaluate the model output for the given coalitions. Using the Gaussian copula imputation
+        """
+
+        values = []
+        for coalition in coalitions:
+            known_idx = list(np.where(coalition)[0])
+            missing_idx = list(np.where(~coalition)[0])
+
+            if len(known_idx) == 0:
+                values.append(0.0)
+                continue
+
+            x_known = self.x[0, known_idx]
+            x_imputed = self.impute(x_known, known_idx, missing_idx)
+
+            full_x = np.zeros(self.x.shape[1])
+            full_x[known_idx] = x_known
+            full_x[missing_idx] = x_imputed
+
+            values.append(float(self.model(full_x.reshape(1, -1))))
+        return np.array(values)
