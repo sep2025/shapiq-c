@@ -9,7 +9,7 @@ import pytest
 from shapiq import ExactComputer
 from shapiq.games.benchmark import SOUM
 
-from shapiq_student.subset_finding import beam_search_coalition, greedy_coalition, subset_finding, brute_force
+from shapiq_student.subset_finding import beam_search_coalition, greedy_coalition, get_subset, brute_force
 
 
 
@@ -32,7 +32,7 @@ def test_subset(max_size, Interaction_values):
 
     # Subset finding
     start_subset = time.perf_counter()
-    subset_output = subset_finding(interaction_values=Interaction_values, max_size=max_size)
+    subset_output = get_subset(interaction_values=Interaction_values, max_size=max_size)
     end_subset = time.perf_counter()
     subset_runtime += end_subset - start_subset
 
