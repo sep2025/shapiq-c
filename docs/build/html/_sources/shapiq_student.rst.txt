@@ -12,13 +12,6 @@ shapiq\_student.basic\_knn\_explainer module
    :show-inheritance:
    :undoc-members:
 
-shapiq\_student.coalition\_finder module
-----------------------------------------
-
-.. automodule:: shapiq_student.coalition_finder
-   :members:
-   :show-inheritance:
-   :undoc-members:
 
 shapiq\_student.gaussian\_copula\_imputer module
 ------------------------------------------------

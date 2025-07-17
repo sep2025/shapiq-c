@@ -252,11 +252,61 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
 </section>
-<section id="shapiq-student-basic-knn-explainer-module">
-<h2>shapiq_student.basic_knn_explainer module<a class="headerlink" href="#shapiq-student-basic-knn-explainer-module" title="Link to this heading">¶</a></h2>
-</section>
-<section id="shapiq-student-coalition-finder-module">
-<h2>shapiq_student.coalition_finder module<a class="headerlink" href="#shapiq-student-coalition-finder-module" title="Link to this heading">¶</a></h2>
+<section id="module-shapiq_student.basic_knn_explainer">
+<span id="shapiq-student-basic-knn-explainer-module"></span><h2>shapiq_student.basic_knn_explainer module<a class="headerlink" href="#module-shapiq_student.basic_knn_explainer" title="Link to this heading">¶</a></h2>
+<p>KNNExplainer module.</p>
+<p>This module provides an exact KNN-based Shapley explainer that attributes predictions
+to individual training instances using exhaustive Shapley value computations.</p>
+<p>This approach follows Jia et al. (2019) and calculates marginal contributions of each
+training point by evaluating all possible permutations of the training set.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="shapiq_student.basic_knn_explainer.KNNExplainer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shapiq_student.basic_knn_explainer.</span></span><span class="sig-name descname"><span class="pre">KNNExplainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/basic_knn_explainer.html#KNNExplainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.basic_knn_explainer.KNNExplainer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Explainer</span></code></p>
+<p>Exact KNN-based Shapley explainer using exhaustive permutations.</p>
+<p>This class explains the prediction for a given test instance by computing
+exact Shapley values for each training point using a k-nearest neighbors classifier.</p>
+<p>For each permutation of the training set, the marginal contribution of each
+instance is computed by observing its effect on the prediction when added
+to a subset of preceding instances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>KNeighborsClassifier</em>) – A fitted sklearn KNeighborsClassifier instance.</p></li>
+<li><p><strong>data</strong> (<em>np.ndarray</em>) – Training data as a 2D numpy array of shape (n_samples, n_features).</p></li>
+<li><p><strong>labels</strong> (<em>np.ndarray</em>) – Labels corresponding to the training data.</p></li>
+<li><p><strong>class_index</strong> (<em>int</em><em> | </em><em>None</em>) – (Optional) Class index to explain. If None, the predicted class is used.</p></li>
+<li><p><strong>K</strong> (<em>int</em><em> | </em><em>None</em>) – (Optional) Number of neighbors to consider. Defaults to the model’s setting.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – If model is not an instance of KNeighborsClassifier.</p></li>
+<li><p><strong>ValueError</strong> – If data and labels have inconsistent lengths.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="shapiq_student.basic_knn_explainer.KNNExplainer.explain">
+<span class="sig-name descname"><span class="pre">explain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/basic_knn_explainer.html#KNNExplainer.explain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.basic_knn_explainer.KNNExplainer.explain" title="Link to this definition">¶</a></dt>
+<dd><p>Returns averaged Shapley values for one or more test points.</p>
+<p>If multiple test points are provided, their individual Shapley values
+are averaged to provide a stable overall attribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em>) – A 1D or 2D array of test points to explain.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An object containing the Shapley values per training instance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>InteractionValues</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-shapiq_student.gaussian_copula_imputer">
 <span id="shapiq-student-gaussian-copula-imputer-module"></span><h2>shapiq_student.gaussian_copula_imputer module<a class="headerlink" href="#module-shapiq_student.gaussian_copula_imputer" title="Link to this heading">¶</a></h2>
@@ -385,23 +435,6 @@ It works by conditioning on the known features and sampling the unknown ones acc
 <span id="shapiq-student-subset-finding-module"></span><h2>shapiq_student.subset_finding module<a class="headerlink" href="#module-shapiq_student.subset_finding" title="Link to this heading">¶</a></h2>
 <p>Module for finding the maximum and minimum coalitions of an InteractionValues object using brute force, greedy, beam search, and recursive search algorithms.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="shapiq_student.subset_finding.all_subsets">
-<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">all_subsets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#all_subsets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.all_subsets" title="Link to this definition">¶</a></dt>
-<dd><p>Return all subsets of features up to given size as list of tuples.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>interaction_values</strong> (<em>InteractionValues</em>)</p></li>
-<li><p><strong>max_size</strong> (<em>int</em>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="shapiq_student.subset_finding.beam_search_coalition">
 <span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">beam_search_coalition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coalition_size</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">beam_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#beam_search_coalition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.beam_search_coalition" title="Link to this definition">¶</a></dt>
 <dd><p>Beam Search for best coalition of coalition size.</p>
@@ -443,6 +476,23 @@ It works by conditioning on the known features and sampling the unknown ones acc
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="shapiq_student.subset_finding.get_subset">
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">get_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#get_subset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.get_subset" title="Link to this definition">¶</a></dt>
+<dd><p>Return all subsets of features up to given size as list of tuples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interaction_values</strong> (<em>InteractionValues</em>)</p></li>
+<li><p><strong>max_size</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="shapiq_student.subset_finding.greedy_coalition">
 <span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">greedy_coalition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coalition_size</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#greedy_coalition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.greedy_coalition" title="Link to this definition">¶</a></dt>
 <dd><p>Finds a coalition of the given size maximizing or minimizing the subset value.</p>
@@ -462,10 +512,10 @@ It works by conditioning on the known features and sampling the unknown ones acc
 
 <dl class="py function">
 <dt class="sig sig-object py" id="shapiq_student.subset_finding.recursive_greedy_coalition">
-<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">recursive_greedy_coalition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#recursive_greedy_coalition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.recursive_greedy_coalition" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">recursive_greedy_coalition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#recursive_greedy_coalition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.recursive_greedy_coalition" title="Link to this definition">¶</a></dt>
 <dd><p>Function to return the maximum and minimum coalitions of size l using a recursive greedy approach.
 :param Interaction_values: The Interaction_Values object from which the maximum and minimum coalition are to be determined
-:param max_length: The maximum length of the coalition to be found</p>
+:param max_size: The maximum length of the coalition to be found</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The InteractionValues object of the maximum and minimum coalition</p>
@@ -473,21 +523,21 @@ It works by conditioning on the known features and sampling the unknown ones acc
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>Interaction_values</strong> (<em>InteractionValues</em>)</p></li>
-<li><p><strong>max_length</strong> (<em>int</em>)</p></li>
+<li><p><strong>max_size</strong> (<em>int</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[<em>InteractionValues</em>]</p>
+<dd class="field-odd"><p><em>InteractionValues</em></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="shapiq_student.subset_finding.recursive_greedy_coalition_max">
-<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">recursive_greedy_coalition_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checked</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#recursive_greedy_coalition_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.recursive_greedy_coalition_max" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">recursive_greedy_coalition_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checked</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#recursive_greedy_coalition_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.recursive_greedy_coalition_max" title="Link to this definition">¶</a></dt>
 <dd><p>Function to find the maximum value coalition using recursive greedy search.
 :param Interaction_values: The Interaction_Values object from which the maximum coalition is to be determined
-:param max_length: The maximum length of the coalition to be found
+:param max_size: The maximum length of the coalition to be found
 :param path: The current path of the coalition being explored
 :param checked: The set of already checked coalitions to avoid duplicates</p>
 <dl class="field-list simple">
@@ -497,7 +547,7 @@ It works by conditioning on the known features and sampling the unknown ones acc
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>Interaction_values</strong> (<em>InteractionValues</em>)</p></li>
-<li><p><strong>max_length</strong> (<em>int</em>)</p></li>
+<li><p><strong>max_size</strong> (<em>int</em>)</p></li>
 <li><p><strong>path</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>)</p></li>
 <li><p><strong>checked</strong> (<em>set</em><em>[</em><em>frozenset</em><em>]</em>)</p></li>
 </ul>
@@ -510,10 +560,10 @@ It works by conditioning on the known features and sampling the unknown ones acc
 
 <dl class="py function">
 <dt class="sig sig-object py" id="shapiq_student.subset_finding.recursive_greedy_coalition_min">
-<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">recursive_greedy_coalition_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checked</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#recursive_greedy_coalition_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.recursive_greedy_coalition_min" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">recursive_greedy_coalition_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checked</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#recursive_greedy_coalition_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.recursive_greedy_coalition_min" title="Link to this definition">¶</a></dt>
 <dd><p>Function to find the minimum value coalition using recursive greedy search.
 :param Interaction_values: The Interaction_Values object from which the minimum coalition is to be determined
-:param max_length: The minimum length of the coalition to be found
+:param max_size: The minimum length of the coalition to be found
 :param path: The current path of the coalition being explored
 :param checked: The set of already checked coalitions to avoid duplicates</p>
 <dl class="field-list simple">
@@ -524,7 +574,7 @@ It works by conditioning on the known features and sampling the unknown ones acc
 <dd class="field-even"><ul class="simple">
 <li><p><strong>checked</strong> (<em>set</em><em>[</em><em>frozenset</em><em>]</em>)</p></li>
 <li><p><strong>Interaction_values</strong> (<em>InteractionValues</em>)</p></li>
-<li><p><strong>max_length</strong> (<em>int</em>)</p></li>
+<li><p><strong>max_size</strong> (<em>int</em>)</p></li>
 <li><p><strong>path</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>)</p></li>
 </ul>
 </dd>
@@ -536,10 +586,10 @@ It works by conditioning on the known features and sampling the unknown ones acc
 
 <dl class="py function">
 <dt class="sig sig-object py" id="shapiq_student.subset_finding.recursive_greedy_max_coalition">
-<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">recursive_greedy_max_coalition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#recursive_greedy_max_coalition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.recursive_greedy_max_coalition" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">recursive_greedy_max_coalition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#recursive_greedy_max_coalition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.recursive_greedy_max_coalition" title="Link to this definition">¶</a></dt>
 <dd><p>Function to return the maximum coalition of size l using a recursive greedy approach.
 :param Interaction_values: The Interaction_Values object from which the maximum coalition is to be determined
-:param max_length: The maximum length of the coalition to be found</p>
+:param max_size: The maximum length of the coalition to be found</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The InteractionValues object of the maximum coalition</p>
@@ -547,7 +597,7 @@ It works by conditioning on the known features and sampling the unknown ones acc
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>Interaction_values</strong> (<em>InteractionValues</em>)</p></li>
-<li><p><strong>max_length</strong> (<em>int</em>)</p></li>
+<li><p><strong>max_size</strong> (<em>int</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -558,10 +608,10 @@ It works by conditioning on the known features and sampling the unknown ones acc
 
 <dl class="py function">
 <dt class="sig sig-object py" id="shapiq_student.subset_finding.recursive_greedy_min_coalition">
-<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">recursive_greedy_min_coalition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#recursive_greedy_min_coalition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.recursive_greedy_min_coalition" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">recursive_greedy_min_coalition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#recursive_greedy_min_coalition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.recursive_greedy_min_coalition" title="Link to this definition">¶</a></dt>
 <dd><p>Function to return the minimum coalition of size l using a recursive greedy approach.
 :param Interaction_values: The Interaction_Values object from which the minimum coalition is to be determined
-:param max_length: The maximum length of the coalition to be found</p>
+:param max_size: The maximum length of the coalition to be found</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The InteractionValues object of the minimum coalition</p>
@@ -569,7 +619,29 @@ It works by conditioning on the known features and sampling the unknown ones acc
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>Interaction_values</strong> (<em>InteractionValues</em>)</p></li>
-<li><p><strong>max_length</strong> (<em>int</em>)</p></li>
+<li><p><strong>max_size</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>InteractionValues</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="shapiq_student.subset_finding.subset_finding">
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">subset_finding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#subset_finding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.subset_finding" title="Link to this definition">¶</a></dt>
+<dd><p>Find the maximum and minimum coalitions of size l using the best algorithms we found for max and min coalitions.
+:param interaction_values: The Interaction_Values object from which the maximum and minimum coalition are to be determined
+:param max_size: The maximum length of the coalition to be found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The InteractionValues object of the maximum and minimum coalition.</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Interaction_values</strong> (<em>InteractionValues</em>)</p></li>
+<li><p><strong>max_size</strong> (<em>int</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -579,14 +651,198 @@ It works by conditioning on the known features and sampling the unknown ones acc
 </dd></dl>
 
 </section>
-<section id="shapiq-student-threshold-knn-shapley-explainer-module">
-<h2>shapiq_student.threshold_knn_shapley_explainer module<a class="headerlink" href="#shapiq-student-threshold-knn-shapley-explainer-module" title="Link to this heading">¶</a></h2>
+<section id="module-shapiq_student.threshold_knn_shapley_explainer">
+<span id="shapiq-student-threshold-knn-shapley-explainer-module"></span><h2>shapiq_student.threshold_knn_shapley_explainer module<a class="headerlink" href="#module-shapiq_student.threshold_knn_shapley_explainer" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="shapiq_student.threshold_knn_shapley_explainer.ThresholdKNNShapleyExplainer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shapiq_student.threshold_knn_shapley_explainer.</span></span><span class="sig-name descname"><span class="pre">ThresholdKNNShapleyExplainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/threshold_knn_shapley_explainer.html#ThresholdKNNShapleyExplainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.threshold_knn_shapley_explainer.ThresholdKNNShapleyExplainer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="shapiq_student.threshold_knn_shapley_explainer.ThresholdKNNShapleyExplainer.shapley_values">
+<span class="sig-name descname"><span class="pre">shapley_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/threshold_knn_shapley_explainer.html#ThresholdKNNShapleyExplainer.shapley_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.threshold_knn_shapley_explainer.ThresholdKNNShapleyExplainer.shapley_values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="shapiq-student-weighted-knn-explainer-module">
-<h2>shapiq_student.weighted_knn_explainer module<a class="headerlink" href="#shapiq-student-weighted-knn-explainer-module" title="Link to this heading">¶</a></h2>
+<section id="module-shapiq_student.weighted_knn_explainer">
+<span id="shapiq-student-weighted-knn-explainer-module"></span><h2>shapiq_student.weighted_knn_explainer module<a class="headerlink" href="#module-shapiq_student.weighted_knn_explainer" title="Link to this heading">¶</a></h2>
+<p>KNNExplainer module (weighted variant).</p>
+<p>This module implements an exact Shapley value explainer for training instances
+based on a distance-weighted k-nearest neighbors classifier.</p>
+<p>This approach follows Wang et al. (2024), using full permutation enumeration
+to compute the marginal contribution of each training point.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="shapiq_student.weighted_knn_explainer.KNNExplainer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shapiq_student.weighted_knn_explainer.</span></span><span class="sig-name descname"><span class="pre">KNNExplainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/weighted_knn_explainer.html#KNNExplainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.weighted_knn_explainer.KNNExplainer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Explainer</span></code></p>
+<p>Exact weighted KNN-based Shapley explainer.</p>
+<p>This explainer computes Shapley values for training instances by using
+a distance-weighted k-nearest neighbors classifier. For each permutation
+of the training data, it measures the marginal contribution of each
+training point to the prediction for a test instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>KNeighborsClassifier</em>) – A fitted sklearn KNeighborsClassifier with weights=”distance”.</p></li>
+<li><p><strong>data</strong> (<em>np.ndarray</em>) – The training data as a 2D numpy array.</p></li>
+<li><p><strong>labels</strong> (<em>np.ndarray</em>) – Class labels for each training point.</p></li>
+<li><p><strong>class_index</strong> (<em>int</em><em> | </em><em>None</em>) – Optional. The class index to explain. If None, the predicted class is used.</p></li>
+<li><p><strong>K</strong> (<em>int</em><em> | </em><em>None</em>) – Optional. The number of neighbors to use (defaults to the model’s setting).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="shapiq_student.weighted_knn_explainer.KNNExplainer.explain">
+<span class="sig-name descname"><span class="pre">explain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/weighted_knn_explainer.html#KNNExplainer.explain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.weighted_knn_explainer.KNNExplainer.explain" title="Link to this definition">¶</a></dt>
+<dd><p>Computes Shapley values for a single test instance.</p>
+<p>This method wraps the internal exact Shapley computation and
+returns the results in the standardized InteractionValues format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em>) – A 1D or 2D numpy array representing one or more test points.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shapley values for the training instances.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>InteractionValues</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<section id="module-shapiq_student">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-shapiq_student" title="Link to this heading">¶</a></h2>
+<p>Source code for the shapiq_student package.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shapiq_student.BasicKNNExplainer">
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.</span></span><span class="sig-name descname"><span class="pre">BasicKNNExplainer</span></span><a class="headerlink" href="#shapiq_student.BasicKNNExplainer" title="Link to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#shapiq_student.basic_knn_explainer.KNNExplainer" title="shapiq_student.basic_knn_explainer.KNNExplainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">KNNExplainer</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="shapiq_student.GaussianCopulaImputer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shapiq_student.</span></span><span class="sig-name descname"><span class="pre">GaussianCopulaImputer</span></span><a class="reference internal" href="_modules/shapiq_student/gaussian_copula_imputer.html#GaussianCopulaImputer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.GaussianCopulaImputer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="shapiq_student.GaussianCopulaImputer.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/gaussian_copula_imputer.html#GaussianCopulaImputer.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.GaussianCopulaImputer.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Preps Imputer by transforming the data into Gaussian space
+using ECDFs and storing the correlation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>ndarray</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shapiq_student.GaussianCopulaImputer.impute">
+<span class="sig-name descname"><span class="pre">impute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_known</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">known_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">missing_idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/gaussian_copula_imputer.html#GaussianCopulaImputer.impute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.GaussianCopulaImputer.impute" title="Link to this definition">¶</a></dt>
+<dd><p>Impute the missing values given known features using the Gaussian copula.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_known</strong> (<em>ndarray</em>)</p></li>
+<li><p><strong>known_idx</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>)</p></li>
+<li><p><strong>missing_idx</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>ndarray</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="shapiq_student.GaussianImputer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shapiq_student.</span></span><span class="sig-name descname"><span class="pre">GaussianImputer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/gaussian_imputer.html#GaussianImputer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.GaussianImputer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Imputer</span></code></p>
+<p>Imputes missing features assuming a conditional multivariate normal distribution.</p>
+<p>This class extends the base Imputer and uses background data to fill in missing values for features in a data point.
+It assumes that the data follows a multivariate normal distribution.
+It works by conditioning on the known features and sampling the unknown ones accordingly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>object</em>) – A predictive model used to generate output values.</p></li>
+<li><p><strong>data</strong> (<em>np.ndarray</em>) – Background/reference data as a 2D array (n_samples, n_features).</p></li>
+<li><p><strong>x</strong> (<em>np.ndarray</em><em> | </em><em>None</em>) – The specific data point to explain, potentially with missing values.</p></li>
+<li><p><strong>sample_size</strong> (<em>int</em>) – Number of samples to draw for estimation (default: 100).</p></li>
+<li><p><strong>random_state</strong> (<em>int</em><em> | </em><em>None</em>) – Random seed for reproducibility (default: None).</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – If True, prints additional information during processing (default: False).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Handles “empty” coalitions (all features unknown) using a pre-defined empty prediction.</p></li>
+<li><p>Supports “full” coalitions where no target variables remain.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="shapiq_student.GaussianImputer.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/gaussian_imputer.html#GaussianImputer.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.GaussianImputer.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Fits the imputer to a specific data point <cite>x</cite>.</p>
+<p>Stores the data point to be explained and rests any previous conditioning information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em>) – The data point to explain.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The fitted imputer instance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>self</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shapiq_student.GaussianImputer.sample_conditional_gaussian">
+<span class="sig-name descname"><span class="pre">sample_conditional_gaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cond_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cond_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/gaussian_imputer.html#GaussianImputer.sample_conditional_gaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.GaussianImputer.sample_conditional_gaussian" title="Link to this definition">¶</a></dt>
+<dd><p>Samples from the conditional multivariate normal distribution.</p>
+<p>Computes the conditional mean and covariance given known features, then draws samples for the unknown features accordingly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray</em>) – Background data as a 2D array.</p></li>
+<li><p><strong>cond_idx</strong> (<em>ndarray</em>) – Indices of the known (conditional) features.</p></li>
+<li><p><strong>cond_values</strong> (<em>ndarray</em>) – The known feature values for conditional features.</p></li>
+<li><p><strong>n_samples</strong> (<em>int</em>) – Number of samples to draw (default: 1).</p></li>
+<li><p><strong>random_state</strong> (<em>int</em><em> | </em><em>None</em>) – Seed for reproducibility (default: None).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>conditional_samples (np.ndarray): Samples from the conditional distribution.</p></li>
+<li><p>mu_cond (np.ndarray): Conditional mean vector.</p></li>
+<li><p>sigma_cond (np.ndarray): Conditional covariance matrix.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Uses the formulas from Aas et al.(2021), Equation (10) and (11) for conditional Gaussian distributions.</p></li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shapiq_student.WeightedKNNExplainer">
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.</span></span><span class="sig-name descname"><span class="pre">WeightedKNNExplainer</span></span><a class="headerlink" href="#shapiq_student.WeightedKNNExplainer" title="Link to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#shapiq_student.weighted_knn_explainer.KNNExplainer" title="shapiq_student.weighted_knn_explainer.KNNExplainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">KNNExplainer</span></code></a></p>
+</dd></dl>
+
 </section>
 </section>
 
@@ -639,8 +895,13 @@ It works by conditioning on the known features and sampling the unknown ones acc
             <ul>
 <li><a class="reference internal" href="#">shapiq_student package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#shapiq-student-basic-knn-explainer-module">shapiq_student.basic_knn_explainer module</a></li>
-<li><a class="reference internal" href="#shapiq-student-coalition-finder-module">shapiq_student.coalition_finder module</a></li>
+<li><a class="reference internal" href="#module-shapiq_student.basic_knn_explainer">shapiq_student.basic_knn_explainer module</a><ul>
+<li><a class="reference internal" href="#shapiq_student.basic_knn_explainer.KNNExplainer"><code class="docutils literal notranslate"><span class="pre">KNNExplainer</span></code></a><ul>
+<li><a class="reference internal" href="#shapiq_student.basic_knn_explainer.KNNExplainer.explain"><code class="docutils literal notranslate"><span class="pre">KNNExplainer.explain()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-shapiq_student.gaussian_copula_imputer">shapiq_student.gaussian_copula_imputer module</a><ul>
 <li><a class="reference internal" href="#shapiq_student.gaussian_copula_imputer.GaussianCopulaImputer"><code class="docutils literal notranslate"><span class="pre">GaussianCopulaImputer</span></code></a><ul>
 <li><a class="reference internal" href="#shapiq_student.gaussian_copula_imputer.GaussianCopulaImputer.fit"><code class="docutils literal notranslate"><span class="pre">GaussianCopulaImputer.fit()</span></code></a></li>
@@ -658,20 +919,47 @@ It works by conditioning on the known features and sampling the unknown ones acc
 </ul>
 </li>
 <li><a class="reference internal" href="#module-shapiq_student.subset_finding">shapiq_student.subset_finding module</a><ul>
-<li><a class="reference internal" href="#shapiq_student.subset_finding.all_subsets"><code class="docutils literal notranslate"><span class="pre">all_subsets()</span></code></a></li>
 <li><a class="reference internal" href="#shapiq_student.subset_finding.beam_search_coalition"><code class="docutils literal notranslate"><span class="pre">beam_search_coalition()</span></code></a></li>
 <li><a class="reference internal" href="#shapiq_student.subset_finding.brute_force"><code class="docutils literal notranslate"><span class="pre">brute_force()</span></code></a></li>
+<li><a class="reference internal" href="#shapiq_student.subset_finding.get_subset"><code class="docutils literal notranslate"><span class="pre">get_subset()</span></code></a></li>
 <li><a class="reference internal" href="#shapiq_student.subset_finding.greedy_coalition"><code class="docutils literal notranslate"><span class="pre">greedy_coalition()</span></code></a></li>
 <li><a class="reference internal" href="#shapiq_student.subset_finding.recursive_greedy_coalition"><code class="docutils literal notranslate"><span class="pre">recursive_greedy_coalition()</span></code></a></li>
 <li><a class="reference internal" href="#shapiq_student.subset_finding.recursive_greedy_coalition_max"><code class="docutils literal notranslate"><span class="pre">recursive_greedy_coalition_max()</span></code></a></li>
 <li><a class="reference internal" href="#shapiq_student.subset_finding.recursive_greedy_coalition_min"><code class="docutils literal notranslate"><span class="pre">recursive_greedy_coalition_min()</span></code></a></li>
 <li><a class="reference internal" href="#shapiq_student.subset_finding.recursive_greedy_max_coalition"><code class="docutils literal notranslate"><span class="pre">recursive_greedy_max_coalition()</span></code></a></li>
 <li><a class="reference internal" href="#shapiq_student.subset_finding.recursive_greedy_min_coalition"><code class="docutils literal notranslate"><span class="pre">recursive_greedy_min_coalition()</span></code></a></li>
+<li><a class="reference internal" href="#shapiq_student.subset_finding.subset_finding"><code class="docutils literal notranslate"><span class="pre">subset_finding()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#shapiq-student-threshold-knn-shapley-explainer-module">shapiq_student.threshold_knn_shapley_explainer module</a></li>
-<li><a class="reference internal" href="#shapiq-student-weighted-knn-explainer-module">shapiq_student.weighted_knn_explainer module</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-shapiq_student.threshold_knn_shapley_explainer">shapiq_student.threshold_knn_shapley_explainer module</a><ul>
+<li><a class="reference internal" href="#shapiq_student.threshold_knn_shapley_explainer.ThresholdKNNShapleyExplainer"><code class="docutils literal notranslate"><span class="pre">ThresholdKNNShapleyExplainer</span></code></a><ul>
+<li><a class="reference internal" href="#shapiq_student.threshold_knn_shapley_explainer.ThresholdKNNShapleyExplainer.shapley_values"><code class="docutils literal notranslate"><span class="pre">ThresholdKNNShapleyExplainer.shapley_values()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-shapiq_student.weighted_knn_explainer">shapiq_student.weighted_knn_explainer module</a><ul>
+<li><a class="reference internal" href="#shapiq_student.weighted_knn_explainer.KNNExplainer"><code class="docutils literal notranslate"><span class="pre">KNNExplainer</span></code></a><ul>
+<li><a class="reference internal" href="#shapiq_student.weighted_knn_explainer.KNNExplainer.explain"><code class="docutils literal notranslate"><span class="pre">KNNExplainer.explain()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-shapiq_student">Module contents</a><ul>
+<li><a class="reference internal" href="#shapiq_student.BasicKNNExplainer"><code class="docutils literal notranslate"><span class="pre">BasicKNNExplainer</span></code></a></li>
+<li><a class="reference internal" href="#shapiq_student.GaussianCopulaImputer"><code class="docutils literal notranslate"><span class="pre">GaussianCopulaImputer</span></code></a><ul>
+<li><a class="reference internal" href="#shapiq_student.GaussianCopulaImputer.fit"><code class="docutils literal notranslate"><span class="pre">GaussianCopulaImputer.fit()</span></code></a></li>
+<li><a class="reference internal" href="#shapiq_student.GaussianCopulaImputer.impute"><code class="docutils literal notranslate"><span class="pre">GaussianCopulaImputer.impute()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#shapiq_student.GaussianImputer"><code class="docutils literal notranslate"><span class="pre">GaussianImputer</span></code></a><ul>
+<li><a class="reference internal" href="#shapiq_student.GaussianImputer.fit"><code class="docutils literal notranslate"><span class="pre">GaussianImputer.fit()</span></code></a></li>
+<li><a class="reference internal" href="#shapiq_student.GaussianImputer.sample_conditional_gaussian"><code class="docutils literal notranslate"><span class="pre">GaussianImputer.sample_conditional_gaussian()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#shapiq_student.WeightedKNNExplainer"><code class="docutils literal notranslate"><span class="pre">WeightedKNNExplainer</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
