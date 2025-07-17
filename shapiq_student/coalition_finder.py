@@ -163,7 +163,7 @@ def recursive_greedy_coalition_min(
 def recursive_greedy_coalition(
     interaction_values: InteractionValues, max_length: int
 ) -> tuple[InteractionValues]:
-    """Recursive greedy search for best coalition of size max_length."""
+    """Recursive greedy search for best coalition of size l."""
     min_subset = recursive_greedy_coalition_min(set(), interaction_values, max_length, [])[1]
     max_subset = recursive_greedy_coalition_max(set(), interaction_values, max_length, [])[1]
     return interaction_values.get_subset(min_subset), interaction_values.get_subset(max_subset)
