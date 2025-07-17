@@ -9,7 +9,7 @@ import pytest
 from shapiq import ExactComputer
 from shapiq.games.benchmark import SOUM
 
-from shapiq_student.subset_finding import beam_search_coalition, greedy_coalition, get_subset, brute_force
+from shapiq_student.coalition_finding import beam_search_coalition, greedy_coalition, get_subset, brute_force
 
 
 

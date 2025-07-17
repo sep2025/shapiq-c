@@ -151,7 +151,7 @@ def recursive_greedy_coalition_max(
             path.append(max_index)
             return max_value, path.copy()
         value, subset = recursive_greedy_coalition_max(
-            checked, Interaction_values, max_size, path.copy()
+            Interaction_values, max_size, path.copy(), checked
         )
         if value > best_value:
             best_value = value
@@ -161,7 +161,7 @@ def recursive_greedy_coalition_max(
 
 
 def recursive_greedy_coalition_min(
-    checked: set[frozenset], Interaction_values: InteractionValues, max_size: int, path: list[int]
+    Interaction_values: InteractionValues, max_size: int, path: list[int], checked: set[frozenset]
 ) -> tuple[float, set[int]]:
     """
     Function to find the minimum value coalition using recursive greedy search.
@@ -173,6 +173,7 @@ def recursive_greedy_coalition_min(
     Returns:
         A tuple containing the minimum value of any checked coalition and a list containing the indices of said coalition 
     """
+    print("running with interaction_values", Interaction_values)
     values = []
     best = []
     best_value = float("inf")
@@ -202,7 +203,7 @@ def recursive_greedy_coalition_min(
             path.append(min_index)
             return min_value, path.copy()
         value, subset = recursive_greedy_coalition_min(
-            checked, Interaction_values, max_size, path.copy()
+            Interaction_values, max_size, path.copy(), checked
         )
         if value < best_value:
             best_value = value
@@ -214,7 +215,7 @@ def recursive_greedy_coalition_min(
 def recursive_greedy_coalition(
     Interaction_values: InteractionValues, max_size: int
 ) -> InteractionValues:
-    """
+    """ 
     Function to return the maximum and minimum coalitions of size l using a recursive greedy approach.
     Parameters:
         Interaction_values: The Interaction_Values object from which the maximum and minimum coalition are to be determined
@@ -222,11 +223,11 @@ def recursive_greedy_coalition(
     Returns:
         The InteractionValues object of the maximum and minimum coalition
     """
-    min_subset = recursive_greedy_coalition_min(set(), Interaction_values, max_size, [])
-    max_subset = recursive_greedy_coalition_max(set(), Interaction_values, max_size, [])
+    min_subset = recursive_greedy_coalition_min(Interaction_values, max_size, [], set())
+    max_subset = recursive_greedy_coalition_max(Interaction_values, max_size, [], set())
     interaction = InteractionValues(
         values=(max_subset[0],min_subset[0]), 
-        interaction_lookup={(max_subset[1]):0, (min_subset[1]):1}, 
+        interaction_lookup={tuple(max_subset[1]):0, tuple(min_subset[1]):1}, 
         index=Interaction_values.index,
         max_order=Interaction_values.max_order,
         n_players=Interaction_values.n_players,
@@ -245,10 +246,10 @@ def recursive_greedy_min_coalition(
     Returns:
         The InteractionValues object of the minimum coalition
     """
-    min_subset = recursive_greedy_coalition_min(set(), Interaction_values, max_size, [])
+    min_subset = recursive_greedy_coalition_min(Interaction_values, max_size, [], set())
     interaction_min = InteractionValues(
         values=(min_subset[0]), 
-        interaction_lookup={(min_subset[1]):0}, 
+        interaction_lookup={tuple(min_subset[1]):0}, 
         index=Interaction_values.index,
         max_order=Interaction_values.max_order,
         n_players=Interaction_values.n_players,
@@ -267,10 +268,10 @@ def recursive_greedy_max_coalition(
     Returns:
         The InteractionValues object of the maximum coalition
     """
-    max_subset = recursive_greedy_coalition_max(set(), Interaction_values, max_size, [])
+    max_subset = recursive_greedy_coalition_max(Interaction_values, max_size, [], set())
     interaction_max = InteractionValues(
         values=(max_subset[0]), 
-        interaction_lookup={(max_subset[1]):0}, 
+        interaction_lookup={tuple(max_subset[1]):0}, 
         index=Interaction_values.index,
         max_order=Interaction_values.max_order,
         n_players=Interaction_values.n_players,
