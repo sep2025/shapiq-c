@@ -1,7 +1,19 @@
+<table>
+<tr>
+<td>
+
 # shapiq-c
+
 [SEP_SoSe2025 / Gruppe C] Game Theoretic Explainable Artificial Intelligence
 
 Dieses Repository enthält die Projektarbeit im Rahmen des **Softwareentwicklungspraktikums SoSe 2025**.
+
+</td>
+<td>
+<img src="https://github.com/user-attachments/assets/70678fb4-12ee-4759-8d85-f9319982e293" alt="SEP-C" width="200" />
+</td>
+</tr>
+</table>
 
 ## 📚 Projektbeschreibung
 Im Projekt werden:
@@ -38,6 +50,7 @@ Ziel ist es, die Koalitionen zu finden, die das vereinfachte Spiel maximieren od
 | `docs/` | Erstellung und Pflege der Projektdokumentation         |
 | `.github/` | GitHub Actions Workflows                               |
 
+*`shapiq_student` is a Python package that extends the functionalities of [`shapiq`](https://github.com/mmschlk/shapiq), a library for explaining machine learning models with Shapley interactions.*
 
 ## 🚀 Projekt verwenden
 
