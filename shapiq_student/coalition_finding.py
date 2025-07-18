@@ -5,9 +5,7 @@ import heapq
 from itertools import combinations
 from shapiq import InteractionValues
 
-def subset_finding(
-    Interaction_values: InteractionValues, max_size: int   
-) -> InteractionValues:
+def subset_finding(*, interaction_values: InteractionValues, max_size: int) -> InteractionValues:
     """
     Find the maximum and minimum coalitions of size l using the best algorithms we found for max and min coalitions.
     Parameters:
@@ -15,12 +13,12 @@ def subset_finding(
         max_size: The maximum length of the coalition to be found.
     Returns:
         The InteractionValues object of the maximum and minimum coalition.
-    """     
-    return recursive_greedy_coalition(Interaction_values, max_size)
+    """
+    return recursive_greedy_coalition(interaction_values, max_size)
 
 def brute_force(
     Interaction_values: InteractionValues, max_size: int
-) -> tuple[InteractionValues, InteractionValues]:
+) -> InteractionValues:
     """
     Brute force method for the minimum and maximum coalitions of size l. Used for having the correct output for testing.
     Parameters:
@@ -32,19 +30,32 @@ def brute_force(
     minNum = float("inf")
     maxNum = float("-inf")
     minCol = maxCol = []
-    indices = list(range(InteractionValues.n_players))
+    indices = list(range(Interaction_values.n_players))
     for combo in combinations(indices, max_size):
-        coalition = InteractionValues.get_subset(list(combo)).values.sum()
+        coalition = Interaction_values.get_subset(list(combo)).values.sum()
         if coalition<minNum: 
             minNum = coalition 
             minCol = combo
         if coalition>maxNum: 
             maxNum = coalition 
             maxCol = combo
-    return(Interaction_values.get_subset(minCol),Interaction_values.get_subset(maxCol))
+    if maxCol == minCol:
+        interaction_lookup = {tuple(maxCol): 0}
+    else:
+        interaction_lookup = {tuple(maxCol): 0, tuple(minCol): 1}
+    interaction = InteractionValues(
+        values=(maxNum, minNum),
+        interaction_lookup=interaction_lookup,
+        index=Interaction_values.index,
+        max_order=Interaction_values.max_order,
+        n_players=Interaction_values.n_players,
+        min_order=Interaction_values.min_order,
+        baseline_value=Interaction_values.baseline_value,
+    )
+    return interaction
 
 
-def greedy_coalition(
+def greedy_coalition_call(
     interaction_values: InteractionValues, coalition_size: int, *, maximize: bool = True
 ) -> set[int]:
     """Finds a coalition of the given size maximizing or minimizing the subset value."""
@@ -73,40 +84,72 @@ def greedy_coalition(
     return selected
 
 
+def greedy_coalition(
+    interaction_values: InteractionValues, coalition_size: int
+) -> InteractionValues:
+    """Returns an InteractionValues object for the maximizing and minimizing greedy coalitions."""
+    greedy_max = greedy_coalition_call(interaction_values, coalition_size, maximize=True)
+    greedy_min = greedy_coalition_call(interaction_values, coalition_size, maximize=False)
+    max_value = interaction_values.get_subset(greedy_max).values.sum()
+    min_value = interaction_values.get_subset(greedy_min).values.sum()
+    interaction = InteractionValues(
+        values=(max_value, min_value),
+        interaction_lookup={tuple(greedy_max): 0, tuple(greedy_min): 1},
+        index=interaction_values.index,
+        max_order=interaction_values.max_order,
+        n_players=interaction_values.n_players,
+        min_order=interaction_values.min_order,
+        baseline_value=interaction_values.baseline_value,
+    )
+    return interaction
+
+
 def beam_search_coalition(
     interaction_values: InteractionValues,
     coalition_size: int,
     *,
     beam_width: int = 100,
-    maximize: bool = True,
-) -> set[int]:
-    """Beam Search for best coalition of coalition size."""
+) -> InteractionValues:
+    """Beam Search for best (max and min) coalition of coalition size. Returns an InteractionValues object."""
     N = list(range(interaction_values.n_players))
-    beam = [set()]
-
+    # Maximize
+    beam_max = [set()]
     for _ in range(coalition_size):
         candidates = []
-        for coalition in beam:
+        for coalition in beam_max:
             remaining = set(N) - coalition
             for feature in remaining:
                 new_set = coalition | {feature}
                 value = interaction_values.get_subset(new_set).values.sum()
-                score = -value if not maximize else value
-                heapq.heappush(candidates, (score, new_set))
-
-        top_candidates = (
-            heapq.nlargest(beam_width, candidates)
-            if maximize
-            else heapq.nsmallest(beam_width, candidates)
-        )
-        beam = [s for _, s in top_candidates]
-
-    best = (
-        max(beam, key=lambda s: interaction_values.get_subset(s).values.sum())
-        if maximize
-        else min(beam, key=lambda s: interaction_values.get_subset(s).values.sum())
+                heapq.heappush(candidates, (value, new_set))
+        top_candidates = heapq.nlargest(beam_width, candidates)
+        beam_max = [s for _, s in top_candidates]
+    max_set = max(beam_max, key=lambda s: interaction_values.get_subset(s).values.sum())
+    max_value = interaction_values.get_subset(max_set).values.sum()
+    # Minimize
+    beam_min = [set()]
+    for _ in range(coalition_size):
+        candidates = []
+        for coalition in beam_min:
+            remaining = set(N) - coalition
+            for feature in remaining:
+                new_set = coalition | {feature}
+                value = interaction_values.get_subset(new_set).values.sum()
+                heapq.heappush(candidates, (value, new_set))
+        top_candidates = heapq.nsmallest(beam_width, candidates)
+        beam_min = [s for _, s in top_candidates]
+    min_set = min(beam_min, key=lambda s: interaction_values.get_subset(s).values.sum())
+    min_value = interaction_values.get_subset(min_set).values.sum()
+    interaction = InteractionValues(
+        values=(max_value, min_value),
+        interaction_lookup={tuple(max_set): 0, tuple(min_set): 1},
+        index=interaction_values.index,
+        max_order=interaction_values.max_order,
+        n_players=interaction_values.n_players,
+        min_order=interaction_values.min_order,
+        baseline_value=interaction_values.baseline_value,
     )
-    return best
+    return interaction
 
 
 def recursive_greedy_coalition_max(
