@@ -25,7 +25,9 @@ lint = [
     "pre-commit>=4.2.0",
 ]
 docs = [
-    # TODO(mmschlk): add your documentation dependencies here
+    "sphinx>=6.0",
+    "myst-parser",
+    "furo"
 ]
 dev = [
     "build>=1.2.2.post1",
