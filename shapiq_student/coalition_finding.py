@@ -1,29 +1,33 @@
 """Module for finding the maximum and minimum coalitions of an InteractionValues object using brute force, greedy, beam search, and recursive search algorithms."""
 
 from __future__ import annotations
+
 import heapq
 from itertools import combinations
+
 from shapiq import InteractionValues
 
+
 def subset_finding(*, interaction_values: InteractionValues, max_size: int) -> InteractionValues:
-    """
-    Find the maximum and minimum coalitions of size l using the best algorithms we found for max and min coalitions.
+    """Find the maximum and minimum coalitions of size l using the best algorithms we found for max and min coalitions.
+
     Parameters:
         interaction_values: The Interaction_Values object from which the maximum and minimum coalition are to be determined
         max_size: The maximum length of the coalition to be found.
+
     Returns:
         The InteractionValues object of the maximum and minimum coalition.
     """
     return recursive_greedy_coalition(interaction_values, max_size)
 
-def brute_force(
-    Interaction_values: InteractionValues, max_size: int
-) -> InteractionValues:
-    """
-    Brute force method for the minimum and maximum coalitions of size l. Used for having the correct output for testing.
+
+def brute_force(Interaction_values: InteractionValues, max_size: int) -> InteractionValues:
+    """Brute force method for the minimum and maximum coalitions of size l. Used for having the correct output for testing.
+
     Parameters:
         Interaction_values: The Interaction_Values object from which the minimum and maximum coalition are to be determined.
         max_size: The maximum length of the coalition to be found.
+
     Returns:
         Tuple of the InteractionValues object of the minimum and maximum coalition.
     """
@@ -33,11 +37,11 @@ def brute_force(
     indices = list(range(Interaction_values.n_players))
     for combo in combinations(indices, max_size):
         coalition = Interaction_values.get_subset(list(combo)).values.sum()
-        if coalition<minNum: 
-            minNum = coalition 
+        if coalition < minNum:
+            minNum = coalition
             minCol = combo
-        if coalition>maxNum: 
-            maxNum = coalition 
+        if coalition > maxNum:
+            maxNum = coalition
             maxCol = combo
     if maxCol == minCol:
         interaction_lookup = {tuple(maxCol): 0}
@@ -104,11 +108,11 @@ def greedy_coalition(
     return interaction
 
 
-def beam_search_coalition(
+def beam_search_coalition_call(
     interaction_values: InteractionValues,
     coalition_size: int,
     *,
-    beam_width: int = 100,
+    beam_width: int,
 ) -> InteractionValues:
     """Beam Search for best (max and min) coalition of coalition size. Returns an InteractionValues object."""
     N = list(range(interaction_values.n_players))
@@ -152,18 +156,26 @@ def beam_search_coalition(
     return interaction
 
 
+def beam_search_coalition(
+    interaction_values: InteractionValues, coalition_size: int
+) -> InteractionValues:
+    """Wrapper for beam_search_coalition with a fixed beam_width of 3."""
+    return beam_search_coalition_call(interaction_values, coalition_size, beam_width=1)
+
+
 def recursive_greedy_coalition_max(
     Interaction_values: InteractionValues, max_size: int, path: list[int], checked: set[frozenset]
 ) -> tuple[float, set[int]]:
-    """
-    Function to find the maximum value coalition using recursive greedy search.
-    Parameters: 
+    """Function to find the maximum value coalition using recursive greedy search.
+
+    Parameters:
         Interaction_values: The Interaction_Values object from which the maximum coalition is to be determined
         max_size: The maximum length of the coalition to be found
         path: The current path of the coalition being explored
         checked: The set of already checked coalitions to avoid duplicates
+
     Returns:
-        A tuple containing the maximum value of any checked coalition and a list containing the indices of said coalition 
+        A tuple containing the maximum value of any checked coalition and a list containing the indices of said coalition.
     """
     values = []
     best = []
@@ -206,17 +218,17 @@ def recursive_greedy_coalition_max(
 def recursive_greedy_coalition_min(
     Interaction_values: InteractionValues, max_size: int, path: list[int], checked: set[frozenset]
 ) -> tuple[float, set[int]]:
-    """
-    Function to find the minimum value coalition using recursive greedy search.
-    Parameters: 
+    """Function to find the minimum value coalition using recursive greedy search.
+
+    Parameters:
         Interaction_values: The Interaction_Values object from which the minimum coalition is to be determined
         max_size: The minimum length of the coalition to be found
         path: The current path of the coalition being explored
         checked: The set of already checked coalitions to avoid duplicates
+
     Returns:
-        A tuple containing the minimum value of any checked coalition and a list containing the indices of said coalition 
+        A tuple containing the minimum value of any checked coalition and a list containing the indices of said coalition.
     """
-    print("running with interaction_values", Interaction_values)
     values = []
     best = []
     best_value = float("inf")
@@ -258,68 +270,76 @@ def recursive_greedy_coalition_min(
 def recursive_greedy_coalition(
     Interaction_values: InteractionValues, max_size: int
 ) -> InteractionValues:
-    """ 
-    Function to return the maximum and minimum coalitions of size l using a recursive greedy approach.
+    """Function to return the maximum and minimum coalitions of size l using a recursive greedy approach.
+
     Parameters:
         Interaction_values: The Interaction_Values object from which the maximum and minimum coalition are to be determined
         max_size: The maximum length of the coalition to be found
+
     Returns:
-        The InteractionValues object of the maximum and minimum coalition
+        The InteractionValues object of the maximum and minimum coalition.
     """
     min_subset = recursive_greedy_coalition_min(Interaction_values, max_size, [], set())
     max_subset = recursive_greedy_coalition_max(Interaction_values, max_size, [], set())
     interaction = InteractionValues(
-        values=(max_subset[0],min_subset[0]), 
-        interaction_lookup={tuple(max_subset[1]):0, tuple(min_subset[1]):1}, 
+        values=(max_subset[0], min_subset[0]),
+        interaction_lookup={tuple(max_subset[1]): 0, tuple(min_subset[1]): 1},
         index=Interaction_values.index,
         max_order=Interaction_values.max_order,
         n_players=Interaction_values.n_players,
         min_order=Interaction_values.min_order,
-        baseline_value=Interaction_values.baseline_value,)
+        baseline_value=Interaction_values.baseline_value,
+    )
     return interaction
+
 
 def recursive_greedy_min_coalition(
     Interaction_values: InteractionValues, max_size: int
 ) -> InteractionValues:
-    """
-    Function to return the minimum coalition of size l using a recursive greedy approach.
+    """Function to return the minimum coalition of size l using a recursive greedy approach.
+
     Parameters:
         Interaction_values: The Interaction_Values object from which the minimum coalition is to be determined
         max_size: The maximum length of the coalition to be found
+
     Returns:
-        The InteractionValues object of the minimum coalition
+        The InteractionValues object of the minimum coalition.
     """
     min_subset = recursive_greedy_coalition_min(Interaction_values, max_size, [], set())
     interaction_min = InteractionValues(
-        values=(min_subset[0]), 
-        interaction_lookup={tuple(min_subset[1]):0}, 
+        values=(min_subset[0]),
+        interaction_lookup={tuple(min_subset[1]): 0},
         index=Interaction_values.index,
         max_order=Interaction_values.max_order,
         n_players=Interaction_values.n_players,
         min_order=Interaction_values.min_order,
-        baseline_value=Interaction_values.baseline_value,)
+        baseline_value=Interaction_values.baseline_value,
+    )
     return interaction_min
+
 
 def recursive_greedy_max_coalition(
     Interaction_values: InteractionValues, max_size: int
 ) -> InteractionValues:
-    """
-    Function to return the maximum coalition of size l using a recursive greedy approach.
+    """Function to return the maximum coalition of size l using a recursive greedy approach.
+
     Parameters:
         Interaction_values: The Interaction_Values object from which the maximum coalition is to be determined
         max_size: The maximum length of the coalition to be found
+
     Returns:
-        The InteractionValues object of the maximum coalition
+        The InteractionValues object of the maximum coalition.
     """
     max_subset = recursive_greedy_coalition_max(Interaction_values, max_size, [], set())
     interaction_max = InteractionValues(
-        values=(max_subset[0]), 
-        interaction_lookup={tuple(max_subset[1]):0}, 
+        values=(max_subset[0]),
+        interaction_lookup={tuple(max_subset[1]): 0},
         index=Interaction_values.index,
         max_order=Interaction_values.max_order,
         n_players=Interaction_values.n_players,
         min_order=Interaction_values.min_order,
-        baseline_value=Interaction_values.baseline_value,)
+        baseline_value=Interaction_values.baseline_value,
+    )
     return interaction_max
 
 
