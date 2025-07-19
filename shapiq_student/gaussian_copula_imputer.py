@@ -133,7 +133,7 @@ class GaussianCopulaImputer(Imputer):
 
         return np.array(x_missing)
 
-    def value_function(self, coalitions: np.ndarray) -> np.ndarray:
+    def __call__(self, coalitions: np.ndarray) -> np.ndarray:
         """Evaluate the model output for the given coalitions. Using the Gaussian copula imputation."""
         values = []
         for coalition in coalitions:
@@ -151,5 +151,5 @@ class GaussianCopulaImputer(Imputer):
             full_x[known_idx] = x_known
             full_x[missing_idx] = x_imputed
 
-            values.append(float(self.model(full_x.reshape(1, -1))))
+            values.append(float(self.predict(full_x.reshape(1, -1))))
         return np.array(values)
