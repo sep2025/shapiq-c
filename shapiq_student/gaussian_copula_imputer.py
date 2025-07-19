@@ -36,13 +36,13 @@ class GaussianCopulaImputer(Imputer):
         """
         super().__init__(model=model, data=data)
         self._x_internal = x
-        self.ecdfs = []
-        self.inverse_ecdfs = []  # Inverse ECDFs to og val
-        self.transformed_data = None
-        self.correlation = None  # Correlation matrix
+        self.ecdfs: list[Any] = []
+        self.inverse_ecdfs: list[Any] = []  # Inverse ECDFs to og val
+        self.transformed_data: np.ndarray | None = None
+        self.correlation: np.ndarray | None = None  # Correlation matrix
 
     @property
-    def x(self) -> np.ndarray:
+    def x(self) -> np.ndarray | None:
         """Get the reference instance x."""
         return self._x_internal
 
@@ -67,7 +67,7 @@ class GaussianCopulaImputer(Imputer):
 
             # ECDF
             def ecdf_func(x: float, sorted_col: np.ndarray = sorted_col) -> float:
-                return np.searchsorted(sorted_col, x, side="right") / len(sorted_col)
+                return float(np.searchsorted(sorted_col, x, side="right") / len(sorted_col))
 
             # Inverse ECDF
             def inverse_ecdf_func(p: float, sorted_col=sorted_col) -> float:
@@ -109,12 +109,12 @@ class GaussianCopulaImputer(Imputer):
             np.ndarray: The imputed values for the missing features.
         """
         # Convert values to z-space
-        z_known = []
-        for i, idx in enumerate(known_idx):
-            ecdf = self.ecdfs[idx]
-            percentile = ecdf(x_known[i])
-            z_known.append(norm.ppf(np.clip(percentile, 1e-6, 1 - 1e-6)))
-        z_known = np.array(z_known)
+        z_known = np.array([
+            norm.ppf(np.clip(self.ecdfs[idx](x_known[i]), 1e-6, 1 - 1e-6))
+            for i, idx in enumerate(known_idx)
+        ])
+
+        assert self.correlation is not None, "Correlation matrix must be computed before imputation."
 
         # Pull out submatrixes from correlation matrix
         Sigma = self.correlation
@@ -140,7 +140,7 @@ class GaussianCopulaImputer(Imputer):
 
         # If one value is missing then put it in a list
         if len(missing_idx) == 1:
-            z_missing = [z_missing]
+            z_missing = np.array([z_missing])
 
         # Convert to original val
         x_missing = []
@@ -172,6 +172,8 @@ class GaussianCopulaImputer(Imputer):
             if len(known_idx) == 0:
                 values.append(0.0)
                 continue
+
+            assert self.x is not None, "Reference instance x must be set before calling imputer."
 
             x_known = self.x[0, known_idx]
             x_imputed = self.impute(x_known, known_idx, missing_idx)
