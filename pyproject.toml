@@ -1,6 +1,4 @@
-# TODO(mmschlk): add your project name and description here
-# uncomment the following line and incpororate the build system
-# [build-system]
+# [pyproject.toml file for shapiq-student project]
 
 [project]
 name = "shapiq-student"
