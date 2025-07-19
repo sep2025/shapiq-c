@@ -1,4 +1,7 @@
-"""This module implements an imputer using Gaussian copula for missing data estimation."""
+"""GaussianCopulaImputer module.
+
+Provides an imputer for missing data estimation using Gaussian copulas.
+"""
 
 from __future__ import annotations
 
@@ -17,15 +20,17 @@ class GaussianCopulaImputer(Imputer):
 
     It transforms the data into Gaussian space using empirical cumulative distribution functions (ECDFs).
     And uses conditional Gaussian distributions to impute missing values.
-    """
 
+    Note:
+        - This method is non-parametric and handles non-gaussian marginals by transforming thee marginals.
+    """
     def __init__(
         self, model: Any = None, data: np.ndarray | None = None, x: np.ndarray | None = None
     ) -> None:
-        """Initializes the imputer with a model and data and a reference instance x.
+        """Initializes the GaussianCopulaImputer.
 
         Args:
-            model: A prediction model. for example a regression model that takes a 2D array as input and returns a 1D array.
+            model: A prediction model that takes a 2D array as input and returns a 1D array of outputs.
             data: The data used to fit the imputer.
             x: A reference instance to use for imputation.
         """
@@ -44,7 +49,10 @@ class GaussianCopulaImputer(Imputer):
     def fit(self, x: np.ndarray) -> None:
         """Preps Imputer by transforming the data into Gaussian space.
 
-        using ECDFs and storing the correlation
+        Using ECDFs and storing the correlation.
+
+        Args:
+            x(np.ndarray): The reference instance to be imputed.
         """
         self._x_internal = x
         x = np.asarray(x)
@@ -88,7 +96,18 @@ class GaussianCopulaImputer(Imputer):
     def impute(
         self, x_known: np.ndarray, known_idx: list[int], missing_idx: list[int]
     ) -> np.ndarray:
-        """Impute the missing values given known features using the Gaussian copula."""
+        """Impute the missing values given known features using the Gaussian copula.
+
+        Transforms the known values into z-space and samples the missing ones conditionally and transforms them back to the original scale using inverse ECDFs.
+
+        Args:
+            x_known (np.ndarray): The known values of the features.
+            known_idx (list[int]): Indices of the known features.
+            missing_idx (list[int]): Indices of the missing features.
+
+        Returns:
+            np.ndarray: The imputed values for the missing features.
+        """
         # Convert values to z-space
         z_known = []
         for i, idx in enumerate(known_idx):
@@ -134,7 +153,17 @@ class GaussianCopulaImputer(Imputer):
         return np.array(x_missing)
 
     def __call__(self, coalitions: np.ndarray) -> np.ndarray:
-        """Evaluate the model output for the given coalitions. Using the Gaussian copula imputation."""
+        """Evaluate the model output for the given coalitions. Using the Gaussian copula imputation.
+
+        Each coalition is a binary vector indicating which features are known (1) and which are missing (0).
+        Missing values are imputed based on the conditional distribution derived from the Gaussian copula.
+
+        Args:
+            coalitions (np.ndarray): A binary matrix of shape (n_coalitions, n_features) where each row indicates which features are known (1) for each coalition.
+
+        Returns:
+            np.ndarray: Model predictions for each coalition.
+        """
         values = []
         for coalition in coalitions:
             known_idx = list(np.where(coalition)[0])
