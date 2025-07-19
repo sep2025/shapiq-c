@@ -8,14 +8,22 @@ import random
 import time
 
 import pytest
-from shapiq import ExactComputer
+from shapiq import ExactComputer, InteractionValues
 from shapiq.games.benchmark import SOUM
 
 from shapiq_student.coalition_finding import (
     beam_search_coalition,
+    beam_search_coalition_call,
     brute_force,
+    get_subset,
     greedy_coalition,
+    greedy_coalition_call,
+    recursive_greedy_coalition,
+    subset_finding,
 )
+
+# Constants for testing
+MIN_EXPECTED_VALUES = 2  # Minimum expected values (max and min)
 
 
 def data():
@@ -59,6 +67,137 @@ def test_all_coalition_methods(max_size, Interaction_values):
     assert greedy_result.values[1] >= brute_result.values[1]  # Greedy should not undershoot
     assert beam_result.values[0] <= brute_result.values[0]
     assert beam_result.values[1] >= brute_result.values[1]
+
+
+def test_subset_finding():
+    """Test subset_finding function."""
+    for Interaction_values in data():
+        for max_size in [3, 4, 5]:
+            result = subset_finding(interaction_values=Interaction_values, max_size=max_size)
+            assert isinstance(result, InteractionValues)
+            assert len(result.values) >= MIN_EXPECTED_VALUES  # At least max and min values
+            assert result.values[0] >= result.values[1]  # max >= min
+
+
+def test_get_subset():
+    """Test get_subset function."""
+    for Interaction_values in data():
+        for max_size in [2, 3, 4]:
+            result = get_subset(Interaction_values, max_size)
+            assert isinstance(result, list)
+            assert all(isinstance(item, tuple) for item in result)
+            # Check that all subsets have size <= max_size
+            assert all(len(item) <= max_size for item in result)
+
+
+def test_greedy_coalition_call():
+    """Test greedy_coalition_call function."""
+    for Interaction_values in data():
+        for max_size in [3, 4, 5]:
+            # Test maximize=True
+            result_max = greedy_coalition_call(Interaction_values, max_size, maximize=True)
+            assert isinstance(result_max, set)
+            assert len(result_max) == max_size
+
+            # Test maximize=False
+            result_min = greedy_coalition_call(Interaction_values, max_size, maximize=False)
+            assert isinstance(result_min, set)
+            assert len(result_min) == max_size
+
+
+def test_beam_search_coalition_call():
+    """Test beam_search_coalition_call function."""
+    for Interaction_values in data():
+        for max_size in [3, 4, 5]:
+            result = beam_search_coalition_call(Interaction_values, max_size, beam_width=3)
+            assert isinstance(result, InteractionValues)
+            assert len(result.values) >= MIN_EXPECTED_VALUES  # At least max and min values
+            assert result.values[0] >= result.values[1]  # max >= min
+
+
+def test_greedy_coalition():
+    """Test greedy_coalition function."""
+    for Interaction_values in data():
+        for max_size in [3, 4, 5]:
+            result = greedy_coalition(Interaction_values, max_size)
+            assert isinstance(result, InteractionValues)
+            assert len(result.values) >= MIN_EXPECTED_VALUES  # At least max and min values
+            assert result.values[0] >= result.values[1]  # max >= min
+
+
+def test_beam_search_coalition():
+    """Test beam_search_coalition function."""
+    for Interaction_values in data():
+        for max_size in [3, 4, 5]:
+            result = beam_search_coalition(Interaction_values, max_size)
+            assert isinstance(result, InteractionValues)
+            assert len(result.values) >= MIN_EXPECTED_VALUES  # At least max and min values
+            assert result.values[0] >= result.values[1]  # max >= min
+
+
+def test_recursive_greedy_coalition():
+    """Test beam_search_coalition function."""
+    for Interaction_values in data():
+        for max_size in [3, 4, 5]:
+            result = recursive_greedy_coalition(Interaction_values, max_size)
+            assert isinstance(result, InteractionValues)
+            assert len(result.values) >= MIN_EXPECTED_VALUES  # At least max and min values
+            assert result.values[0] >= result.values[1]  # max >= min
+
+
+def test_edge_cases():
+    """Test edge cases and error conditions."""
+    for Interaction_values in data():
+        n_players = Interaction_values.n_players
+
+        # Test with max_size = 1
+        result = brute_force(Interaction_values, 1)
+        assert isinstance(result, InteractionValues)
+        assert len(result.values) >= MIN_EXPECTED_VALUES
+
+        # Test with max_size = n_players
+        result = brute_force(Interaction_values, n_players)
+        assert isinstance(result, InteractionValues)
+        assert len(result.values) >= MIN_EXPECTED_VALUES
+
+        # Test greedy with max_size = 1
+        result = greedy_coalition(Interaction_values, 1)
+        assert isinstance(result, InteractionValues)
+        assert len(result.values) >= MIN_EXPECTED_VALUES
+
+        # Test beam search with max_size = 1
+        result = beam_search_coalition(Interaction_values, 1)
+        assert isinstance(result, InteractionValues)
+        assert len(result.values) >= MIN_EXPECTED_VALUES
+
+        # Test beam search with max_size = 1
+        result = recursive_greedy_coalition(Interaction_values, 1)
+        assert isinstance(result, InteractionValues)
+        assert len(result.values) >= MIN_EXPECTED_VALUES
+
+
+def test_error_handling():
+    """Test error handling for invalid inputs."""
+    for Interaction_values in data():
+        n_players = Interaction_values.n_players
+
+        # Test with max_size > n_players (should raise error or handle gracefully)
+        try:
+            result = brute_force(Interaction_values, n_players + 1)
+            # If no error is raised, the function should handle it gracefully
+            assert isinstance(result, InteractionValues)
+        except (ValueError, IndexError):
+            # Error is also acceptable
+            pass
+
+        # Test with max_size = 0 (should raise error or handle gracefully)
+        try:
+            result = brute_force(Interaction_values, 0)
+            # If no error is raised, the function should handle it gracefully
+            assert isinstance(result, InteractionValues)
+        except (ValueError, IndexError):
+            # Error is also acceptable
+            pass
 
 
 def write_results_to_csv(results, filename):
