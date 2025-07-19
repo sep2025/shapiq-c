@@ -1,45 +1,31 @@
-"""KNNExplainer module.
+"""BasicKNNExplainer module.
 
-This module provides an exact KNN-based Shapley explainer that attributes predictions
-to individual training instances using exhaustive Shapley value computations.
-
-This approach follows Jia et al. (2019) and calculates marginal contributions of each
-training point by evaluating all possible permutations of the training set.
+This module implements the original KNN-Shapley algorithm proposed by Jia et al. (2019).
+It assigns Shapley values to each training instance in a KNN classifier by computing
+its contribution to classification correctness over all coalitions.
 """
 
 from __future__ import annotations
-
-from itertools import permutations
 
 import numpy as np
 from shapiq.explainer import Explainer
 from shapiq.interaction_values import InteractionValues
 from sklearn.neighbors import KNeighborsClassifier
 
-# Define named constant to avoid magic number usage
-NDIM_FEATURE_AXIS = 2
-
 
 class KNNExplainer(Explainer):
-    """Exact KNN-based Shapley explainer using exhaustive permutations.
+    """Exact KNN-Shapley explainer for KNeighborsClassifier (Jia et al. 2019).
 
-    This class explains the prediction for a given test instance by computing
-    exact Shapley values for each training point using a k-nearest neighbors classifier.
-
-    For each permutation of the training set, the marginal contribution of each
-    instance is computed by observing its effect on the prediction when added
-    to a subset of preceding instances.
+    Computes the influence of each training point on the classification of a
+    test instance by calculating exact Shapley values based on label agreement
+    within the top-K nearest neighbors.
 
     Args:
-        model: A fitted sklearn KNeighborsClassifier instance.
-        data: Training data as a 2D numpy array of shape (n_samples, n_features).
-        labels: Labels corresponding to the training data.
-        class_index: (Optional) Class index to explain. If None, the predicted class is used.
-        K: (Optional) Number of neighbors to consider. Defaults to the model's setting.
-
-    Raises:
-        TypeError: If model is not an instance of KNeighborsClassifier.
-        ValueError: If data and labels have inconsistent lengths.
+        model: Fitted sklearn KNeighborsClassifier instance.
+        data: Training data used to fit the model.
+        labels: Corresponding labels for the training data.
+        class_index: Target class to explain. If None, model prediction is used.
+        K: Number of neighbors to use. Defaults to model.n_neighbors.
     """
 
     def __init__(
@@ -50,94 +36,89 @@ class KNNExplainer(Explainer):
         class_index: int | None = None,
         K: int | None = None,
     ) -> None:
-        """Initializes the KNNExplainer with training data and model."""
+        """Initialize the KNNExplainer with model, data, and parameters."""
+        msg_type = "Only sklearn's KNeighborsClassifier is supported."
         if not isinstance(model, KNeighborsClassifier):
-            msg = "Only sklearn's KNeighborsClassifier is supported."
-            raise TypeError(msg)
+            raise TypeError(msg_type)
 
-        self.model = model
+        super().__init__(model=model, index="SV", max_order=1)
+
         self.X_train = np.asarray(data)
         self.y_train = np.asarray(labels)
+        self.model = model
         self.class_index = class_index
         self.K = K if K is not None else model.n_neighbors
 
-        self.mode = "normal"
-        self.max_order = 1
-        self.index = "SV"
-
-        if self.X_train.shape[0] != len(self.y_train):
-            msg = "Mismatch between data and labels."
-            raise ValueError(msg)
+        msg_len = "Training data and labels must have same length."
+        if len(self.X_train) != len(self.y_train):
+            raise ValueError(msg_len)
 
     def _compute_single(self, x_test: np.ndarray) -> np.ndarray:
-        """Computes exact Shapley values for a single test point.
-
-        For each permutation of the training data, the model is retrained on growing
-        subsets of the permutation, and the prediction's agreement with the target
-        class is used to measure marginal contributions.
+        """Compute exact Shapley values for a single test instance.
 
         Args:
-            x_test: A single test instance as a 1D numpy array.
+            x_test: Test instance, shape (n_features,).
 
         Returns:
-            A numpy array of shape (n_train,) containing the Shapley values.
+            Array of Shapley values, one per training example.
         """
         n = len(self.X_train)
         shapley = np.zeros(n)
+
+        msg_attr = "Provided model does not have a `predict` method."
+        if not hasattr(self.model, "predict"):
+            raise AttributeError(msg_attr)
 
         # Determine which class to explain
         y_target = (
             self.class_index if self.class_index is not None else self.model.predict([x_test])[0]
         )
 
-        # Generate all permutations of the training indices (brute-force Shapley)
-        all_perms = list(permutations(range(n)))
+        # Compute distances to training points and sort by proximity
+        distances = np.linalg.norm(self.X_train - x_test, axis=1)
+        sorted_indices = np.argsort(distances)
+        sorted_labels = self.y_train[sorted_indices]
 
-        for pi in all_perms:
-            S = []
-            pred_prev = 0.0
+        # Mark whether each sorted point agrees with the target class
+        is_correct = np.array([int(y == y_target) for y in sorted_labels])
 
-            for player in pi:
-                S.append(player)
+        # Compute Shapley value contributions using recurrence
+        s_sorted = np.zeros(n)
+        s_sorted[-1] = is_correct[-1] / n
 
-                # Fit a KNN model on the current subset S
-                X_S = self.X_train[S]
-                y_S = self.y_train[S]
-                k = min(self.K, len(S))
+        for i in reversed(range(n - 1)):
+            k = min(self.K, i + 1)
+            delta = (is_correct[i] - is_correct[i + 1]) * k / (self.K * (i + 1))
+            s_sorted[i] = s_sorted[i + 1] + delta
 
-                clf = KNeighborsClassifier(n_neighbors=k)
-                clf.fit(X_S, y_S)
-                pred = clf.predict([x_test])[0]
+        # Map back to original training point indices
+        for i, idx in enumerate(sorted_indices):
+            shapley[idx] = s_sorted[i]
 
-                value = float(pred == y_target)
-                marginal_contribution = value - pred_prev
-                shapley[player] += marginal_contribution
-                pred_prev = value
-
-        shapley /= len(all_perms)
         return shapley
 
     def explain(self, x: np.ndarray) -> InteractionValues:
-        """Returns averaged Shapley values for one or more test points.
-
-        If multiple test points are provided, their individual Shapley values
-        are averaged to provide a stable overall attribution.
+        """Compute Shapley values for one or more test instances.
 
         Args:
-            x: A 1D or 2D array of test points to explain.
+            x: Test instance(s), shape (n_samples, n_features) or (n_features,).
 
         Returns:
-            InteractionValues: An object containing the Shapley values per training instance.
+            InteractionValues object containing average Shapley values.
         """
+        msg_input = "Missing input for 'x' in explain()."
+        if x is None:
+            raise ValueError(msg_input)
+
         x = np.atleast_2d(x)
         shapley_matrix = [self._compute_single(xi) for xi in x]
-        averaged_shapley = np.mean(shapley_matrix, axis=0)
+        averaged = np.mean(shapley_matrix, axis=0)
 
         return InteractionValues(
-            values=averaged_shapley,
+            values=averaged,
             index="SV",
             max_order=1,
             min_order=1,
             baseline_value=0.0,
-            n_players=x.shape[1] if x.ndim == NDIM_FEATURE_AXIS else 1,
+            n_players=self.X_train.shape[0],
         )
