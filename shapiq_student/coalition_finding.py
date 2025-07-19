@@ -60,7 +60,10 @@ def brute_force(Interaction_values: InteractionValues, max_size: int) -> Interac
 
 
 def greedy_coalition_call(
-    interaction_values: InteractionValues, coalition_size: int, *, maximize: bool = True
+    interaction_values: InteractionValues,
+    coalition_size: int,
+    *,
+    maximize: bool = True,
 ) -> set[int]:
     """Finds a coalition of the given size maximizing or minimizing the subset value."""
     N = list(range(interaction_values.n_players))
@@ -92,10 +95,14 @@ def greedy_coalition(
     interaction_values: InteractionValues, coalition_size: int
 ) -> InteractionValues:
     """Returns an InteractionValues object for the maximizing and minimizing greedy coalitions."""
+    # Maximize
     greedy_max = greedy_coalition_call(interaction_values, coalition_size, maximize=True)
-    greedy_min = greedy_coalition_call(interaction_values, coalition_size, maximize=False)
     max_value = interaction_values.get_subset(greedy_max).values.sum()
+
+    # Minimize
+    greedy_min = greedy_coalition_call(interaction_values, coalition_size, maximize=False)
     min_value = interaction_values.get_subset(greedy_min).values.sum()
+
     interaction = InteractionValues(
         values=(max_value, min_value),
         interaction_lookup={tuple(greedy_max): 0, tuple(greedy_min): 1},
