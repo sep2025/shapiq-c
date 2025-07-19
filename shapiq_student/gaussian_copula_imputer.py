@@ -180,5 +180,5 @@ class GaussianCopulaImputer(Imputer):
             full_x[known_idx] = x_known
             full_x[missing_idx] = x_imputed
 
-            values.append(float(self.predict(full_x.reshape(1, -1))))
+            values.append(float(self.predict(full_x.reshape(1, -1))[0]))
         return np.array(values)
