@@ -89,7 +89,6 @@ def greedy_coalition_call(
     *,
     maximize: bool,
 ) -> set[int]:
-    
     """Find a coalition of a given size that either maximizes or minimizes the interaction value using a greedy algorithm.
 
     Parameters:
@@ -104,7 +103,6 @@ def greedy_coalition_call(
         ValueError: If coalition_size is smaller than 1 or larger than the number of players.
         TypeError: If interaction_values is not of type InteractionValues.
     """
-    
     N = list(range(interaction_values.n_players))
     selected: set[int] = set()
     remaining = set(N)
@@ -133,7 +131,6 @@ def greedy_coalition_call(
 def greedy_coalition(
     interaction_values: InteractionValues, coalition_size: int
 ) -> InteractionValues:
-    
     """Find the maximum and minimum coalitions of a given size using a greedy approach.
 
     Parameters:
@@ -147,7 +144,6 @@ def greedy_coalition(
         ValueError: If coalition_size is smaller than 1 or larger than the number of players.
         TypeError: If interaction_values is not of type InteractionValues.
     """
-    
     check_edge_cases(interaction_values, coalition_size)
     # Maximize
     greedy_max = greedy_coalition_call(interaction_values, coalition_size, maximize=True)
@@ -175,8 +171,6 @@ def beam_search_coalition_call(
     *,
     beam_width: int,
 ) -> InteractionValues:
-    
-    
     """Find the maximum and minimum coalitions of a given size using beam search.
 
     Parameters:
@@ -191,8 +185,6 @@ def beam_search_coalition_call(
         ValueError: If coalition_size is smaller than 1 or larger than the number of players.
         TypeError: If interaction_values is not of type InteractionValues.
     """
-    
-    
     check_edge_cases(interaction_values, coalition_size)
     N = list(range(interaction_values.n_players))
     # Maximize
@@ -238,8 +230,6 @@ def beam_search_coalition_call(
 def beam_search_coalition(
     interaction_values: InteractionValues, coalition_size: int
 ) -> InteractionValues:
-    
-    
     """Find the maximum and minimum coalitions of a given size using beam search with fixed beam width (3) so that Beam Search can be used with only two calling variables. It is a Wrapper for beam_search_coalition.
 
     Parameters:
@@ -253,8 +243,6 @@ def beam_search_coalition(
         ValueError: If coalition_size is smaller than 1 or larger than the number of players.
         TypeError: If interaction_values is not of type InteractionValues.
     """
-    
-    
     check_edge_cases(interaction_values, coalition_size)
     return beam_search_coalition_call(interaction_values, coalition_size, beam_width=3)
 
@@ -374,6 +362,10 @@ def recursive_greedy_coalition(
 
     Returns:
         The InteractionValues object of the maximum and minimum coalition.
+
+    Raises:
+        ValueError: If coalition_size is smaller than 1 or larger than the number of players.
+        TypeError: If interaction_values is not of type InteractionValues.
     """
     check_edge_cases(Interaction_values, max_size)
     min_subset = recursive_greedy_coalition_min(Interaction_values, max_size, [], set())
@@ -401,6 +393,10 @@ def recursive_greedy_min_coalition(
 
     Returns:
         The InteractionValues object of the minimum coalition.
+
+    Raises:
+        ValueError: If coalition_size is smaller than 1 or larger than the number of players.
+        TypeError: If interaction_values is not of type InteractionValues.
     """
     min_subset = recursive_greedy_coalition_min(Interaction_values, max_size, [], set())
     interaction_min = InteractionValues(
@@ -426,6 +422,10 @@ def recursive_greedy_max_coalition(
 
     Returns:
         The InteractionValues object of the maximum coalition.
+
+    Raises:
+        ValueError: If coalition_size is smaller than 1 or larger than the number of players.
+        TypeError: If interaction_values is not of type InteractionValues.
     """
     max_subset = recursive_greedy_coalition_max(Interaction_values, max_size, [], set())
     interaction_max = InteractionValues(
