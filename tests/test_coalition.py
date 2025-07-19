@@ -15,6 +15,7 @@ from shapiq_student.coalition_finding import (
     beam_search_coalition,
     beam_search_coalition_call,
     brute_force,
+    check_edge_cases,
     get_subset,
     greedy_coalition,
     greedy_coalition_call,
@@ -176,28 +177,53 @@ def test_edge_cases():
         assert len(result.values) >= MIN_EXPECTED_VALUES
 
 
+def test_check_edge_cases():
+    """Test the check_edge_cases function directly."""
+    for Interaction_values in data():
+        n_players = Interaction_values.n_players
+
+        # Test valid inputs (should not raise any error)
+        check_edge_cases(Interaction_values, 1)
+        check_edge_cases(Interaction_values, n_players // 2)
+        check_edge_cases(Interaction_values, n_players)
+
+        # Test with max_size > n_players (should raise ValueError)
+        with pytest.raises(ValueError, match="Max_size is larger than the amount of features"):
+            check_edge_cases(Interaction_values, n_players + 1)
+
+        # Test with max_size = 0 (should raise ValueError)
+        with pytest.raises(ValueError, match="Max_size 0 or smaller"):
+            check_edge_cases(Interaction_values, 0)
+
+        # Test with max_size = -1 (should raise ValueError)
+        with pytest.raises(ValueError, match="Max_size 0 or smaller"):
+            check_edge_cases(Interaction_values, -1)
+
+        # Test with wrong type for Interaction_values (should raise TypeError)
+        with pytest.raises(TypeError, match="Did not pass an InteractionValues object"):
+            check_edge_cases("not an InteractionValues object", 1)
+
+
 def test_error_handling():
     """Test error handling for invalid inputs."""
     for Interaction_values in data():
         n_players = Interaction_values.n_players
 
-        # Test with max_size > n_players (should raise error or handle gracefully)
-        try:
-            result = brute_force(Interaction_values, n_players + 1)
-            # If no error is raised, the function should handle it gracefully
-            assert isinstance(result, InteractionValues)
-        except (ValueError, IndexError):
-            # Error is also acceptable
-            pass
+        # Test with max_size > n_players (should raise ValueError)
+        with pytest.raises(ValueError, match="Max_size is larger than the amount of features"):
+            brute_force(Interaction_values, n_players + 1)
 
-        # Test with max_size = 0 (should raise error or handle gracefully)
-        try:
-            result = brute_force(Interaction_values, 0)
-            # If no error is raised, the function should handle it gracefully
-            assert isinstance(result, InteractionValues)
-        except (ValueError, IndexError):
-            # Error is also acceptable
-            pass
+        # Test with max_size = 0 (should raise ValueError)
+        with pytest.raises(ValueError, match="Max_size 0 or smaller"):
+            brute_force(Interaction_values, 0)
+
+        # Test with max_size = -1 (should raise ValueError)
+        with pytest.raises(ValueError, match="Max_size 0 or smaller"):
+            brute_force(Interaction_values, -1)
+
+        # Test with wrong type for Interaction_values (should raise TypeError)
+        with pytest.raises(TypeError, match="Did not pass an InteractionValues object"):
+            brute_force("not an InteractionValues object", 1)
 
 
 def write_results_to_csv(results, filename):
