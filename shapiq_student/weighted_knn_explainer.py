@@ -18,8 +18,8 @@ if TYPE_CHECKING:
     from sklearn.neighbors import KNeighborsClassifier
 
 
-class KNNExplainer(Explainer):
-    """WKNN-Shapley Explainer for distance-based KNN classifiers.
+class WeightedKNNExplainer(Explainer):
+    """KNN-Shapley Explainer for distance-based KNN classifiers.
 
     Args:
         model: A KNeighborsClassifier with weights='distance' or 'uniform'.
@@ -141,7 +141,7 @@ class KNNExplainer(Explainer):
                     S_list = list(S)
                     S_plus = [*S_list, i]
 
-                    top_S = np.argsort(dists[S_list])[: min(K, len(S_list))] if S_list else []
+                    top_S: list[int] = np.argsort(dists[S_list])[: min(K, len(S_list))].tolist() if S_list else []
                     top_S_plus = np.argsort(dists[S_plus])[: min(K, len(S_plus))]
 
                     vote_S = np.sum(signed_weights[S_list][top_S]) if S_list else 0.0

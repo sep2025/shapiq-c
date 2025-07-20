@@ -13,7 +13,7 @@ from shapiq.interaction_values import InteractionValues
 from sklearn.neighbors import KNeighborsClassifier
 
 
-class KNNExplainer(Explainer):
+class BasicKNNExplainer(Explainer):
     """Exact KNN-Shapley explainer for KNeighborsClassifier (Jia et al. 2019).
 
     Computes the influence of each training point on the classification of a
