@@ -7,6 +7,8 @@ from .gaussian_imputer import GaussianImputer
 from .weighted_knn_explainer import KNNExplainer as WeightedKNNExplainer
 
 __all__ = [
+    "BasicKNNExplainer",
+    "WeightedKNNExplainer",
     "GaussianImputer",
     "GaussianCopulaImputer",
     "subset_finding",
