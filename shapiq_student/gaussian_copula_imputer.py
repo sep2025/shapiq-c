@@ -5,12 +5,15 @@ Provides an imputer for missing data estimation using Gaussian copulas.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from numpy.linalg import pinv
 from scipy.stats import multivariate_normal, norm
 from shapiq.games.imputer.base import Imputer
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 # ECDF: empirical cumulative distribution function
 
@@ -25,7 +28,7 @@ class GaussianCopulaImputer(Imputer):
         - This method is non-parametric and handles non-gaussian marginals by transforming thee marginals.
     """
     def __init__(
-        self, model: Any = None, data: np.ndarray | None = None, x: np.ndarray | None = None
+        self, model: Callable[[np.ndarray], np.ndarray] | None = None, data: np.ndarray | None = None, x: np.ndarray | None = None
     ) -> None:
         """Initializes the GaussianCopulaImputer.
 
@@ -70,7 +73,7 @@ class GaussianCopulaImputer(Imputer):
                 return float(np.searchsorted(sorted_col, x, side="right") / len(sorted_col))
 
             # Inverse ECDF
-            def inverse_ecdf_func(p: float, sorted_col=sorted_col) -> float:
+            def inverse_ecdf_func(p: float, sorted_col: np.ndarray = sorted_col) -> float:
                 p = np.clip(p, 1e-6, 1 - 1e-6)
                 idx = np.round(p * (len(sorted_col) - 1)).astype(int)
                 return sorted_col[idx]
@@ -114,7 +117,8 @@ class GaussianCopulaImputer(Imputer):
             for i, idx in enumerate(known_idx)
         ])
 
-        assert self.correlation is not None, "Correlation matrix must be computed before imputation."
+        if self.correlation is None:
+            raise ValueError
 
         # Pull out submatrixes from correlation matrix
         Sigma = self.correlation
@@ -173,7 +177,8 @@ class GaussianCopulaImputer(Imputer):
                 values.append(0.0)
                 continue
 
-            assert self.x is not None, "Reference instance x must be set before calling imputer."
+            if self.x is None:
+                raise ValueError
 
             x_known = self.x[0, known_idx]
             x_imputed = self.impute(x_known, known_idx, missing_idx)
