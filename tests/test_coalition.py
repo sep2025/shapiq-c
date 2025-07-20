@@ -1,16 +1,30 @@
+"""Tests for coalition finding algorithms with benchmark games."""
+
 from __future__ import annotations
 
 import csv
-import os
+from pathlib import Path
 import random
 import time
 
 import pytest
-from shapiq import ExactComputer
+from shapiq import ExactComputer, InteractionValues
 from shapiq.games.benchmark import SOUM
 
-from shapiq_student.coalition_finder import beam_search_coalition, greedy_coalition, subset_finding
-from shapiq_student.subset_finding import brute_force
+from shapiq_student.coalition_finding import (
+    beam_search_coalition,
+    beam_search_coalition_call,
+    brute_force,
+    check_edge_cases,
+    get_subset,
+    greedy_coalition,
+    greedy_coalition_call,
+    recursive_greedy_coalition,
+    subset_finding,
+)
+
+# Constants for testing
+MIN_EXPECTED_VALUES = 2  # Minimum expected values (max and min)
 
 
 def data():
@@ -26,146 +40,208 @@ def data():
 
 @pytest.mark.parametrize("max_size", [5, 6, 7, "n_players"])
 @pytest.mark.parametrize("Interaction_values", data())
-def test_subset(max_size, Interaction_values):
+def test_all_coalition_methods(max_size, Interaction_values):
+    """Test all coalition methods (brute, greedy, beam) against each other."""
     max_size = max_size if max_size != "n_players" else Interaction_values.n_players
-    subset_runtime = brute_runtime = greedy_runtime = 0
-
-    # Subset finding
-    start_subset = time.perf_counter()
-    subset_output = subset_finding(interaction_values=Interaction_values, max_size=max_size)
-    end_subset = time.perf_counter()
-    subset_runtime += end_subset - start_subset
+    brute_runtime = greedy_runtime = beam_runtime = 0
 
     # Brute force
     start_brute = time.perf_counter()
-    brute_min, brute_max = brute_force(Interaction_values, max_size)
+    brute_result = brute_force(Interaction_values, max_size)
     end_brute = time.perf_counter()
     brute_runtime += end_brute - start_brute
 
     # Greedy
-    single_values = Interaction_values.get_n_order_values(1)
-    pairwise_values = Interaction_values.get_n_order_values(2)
-
-    nodes = {i: single_values[i] for i in range(len(single_values))}
-
-    edges = {}
-    for i in range(len(pairwise_values)):
-        for j in range(i + 1, len(pairwise_values)):
-            edges[frozenset({i, j})] = pairwise_values[i][j]
-
-    hyperedges = {}
-
-    explanation_dict = {
-        "bias": Interaction_values.baseline_value,
-        "nodes": nodes,
-        "edges": edges,
-        "hyperedges": hyperedges,
-    }
-
     start_greedy = time.perf_counter()
-    greedy_max = greedy_coalition(Interaction_values, max_size, maximize=True)
-    greedy_min = greedy_coalition(Interaction_values, max_size, maximize=False)
+    greedy_result = greedy_coalition(Interaction_values, max_size)
     end_greedy = time.perf_counter()
     greedy_runtime += end_greedy - start_greedy
 
-    greedy_max_value = Interaction_values.get_subset(greedy_max).values.sum()
-    greedy_min_value = Interaction_values.get_subset(greedy_min).values.sum()
-    brute_max_value = Interaction_values.get_subset(set(brute_max)).values.sum()
-    brute_min_value = Interaction_values.get_subset(set(brute_min)).values.sum()
-
-    overlap_max = len(greedy_max.intersection(set(brute_max))) / max_size
-    overlap_min = len(greedy_min.intersection(set(brute_min))) / max_size
-
-    print(f"Feature overlap for max: {overlap_max:.2%}")
-    print(f"Feature overlap for min: {overlap_min:.2%}")
-
-    print(
-        f"\ntotal runtime Subset: {subset_runtime}",
-        f"\ntotal runtime Brute: {brute_runtime}",
-        f"\ntotal runtime Greedy: {greedy_runtime}",
-    )
-
-    assert greedy_max_value <= brute_max_value  # Greedy should not overshoot
-    assert greedy_min_value >= brute_min_value  # Greedy should not undershoot
-
-
-# Test for beam_search_coalition
-"""Tests greedy, beam search for max and min coalition and compares them to brute force for results. Also times their runtime."""
-
-
-@pytest.mark.parametrize("max_size", [5, 6, 7, "n_players"])
-@pytest.mark.parametrize("Interaction_values", data())
-def test_beam_search(max_size, Interaction_values):
-    max_size = max_size if max_size != "n_players" else Interaction_values.n_players
-    beam_runtime = brute_runtime = 0
-
-    single_values = Interaction_values.get_n_order_values(1)
-    pairwise_values = Interaction_values.get_n_order_values(2)
-
-    nodes = {i: single_values[i] for i in range(len(single_values))}
-    edges = {}
-    for i in range(len(pairwise_values)):
-        for j in range(i + 1, len(pairwise_values)):
-            edges[frozenset({i, j})] = pairwise_values[i][j]
-    hyperedges = {}
-
-    explanation_dict = {
-        "bias": Interaction_values.baseline_value,
-        "nodes": nodes,
-        "edges": edges,
-        "hyperedges": hyperedges,
-    }
-
-    start_greedy = time.perf_counter()
-    greedy_max = greedy_coalition(Interaction_values, max_size, maximize=True)
-    greedy_min = greedy_coalition(Interaction_values, max_size, maximize=False)
-    end_greedy = time.perf_counter()
-    greedy_runtime = end_greedy - start_greedy
-
+    # Beam search
     start_beam = time.perf_counter()
-    beam_max = beam_search_coalition(Interaction_values, max_size, beam_width=3, maximize=True)
-    beam_min = beam_search_coalition(Interaction_values, max_size, beam_width=3, maximize=False)
+    beam_result = beam_search_coalition(Interaction_values, max_size)
     end_beam = time.perf_counter()
     beam_runtime += end_beam - start_beam
 
-    # Brute Force
-    start_brute = time.perf_counter()
-    brute_min, brute_max = brute_force(Interaction_values, max_size)
-    end_brute = time.perf_counter()
-    brute_runtime += end_brute - start_brute
-
-    beam_max_value = Interaction_values.get_subset(beam_max).values.sum()
-    beam_min_value = Interaction_values.get_subset(beam_min).values.sum()
-    brute_max_value = Interaction_values.get_subset(set(brute_max)).values.sum()
-    brute_min_value = Interaction_values.get_subset(set(brute_min)).values.sum()
-
-    overlap_max = len(beam_max.intersection(set(brute_max))) / max_size
-    overlap_min = len(beam_min.intersection(set(brute_min))) / max_size
-
-    print(f"\n=== COMPARISON max_size={max_size} ===")
-    print(f"Greedy overlap min: {len(greedy_min.intersection(set(brute_min))) / max_size:.2%}")
-    print(f"Greedy overlap max: {len(greedy_max.intersection(set(brute_max))) / max_size:.2%}")
-    print(f"Beam   overlap min: {overlap_min:.2%}")
-    print(f"Beam   overlap max: {overlap_max:.2%}")
-    print(f"Runtime Brute : {brute_runtime:.6f}")
-    print(f"Runtime Greedy: {greedy_runtime:.6f}")
-    print(f"Runtime Beam  : {beam_runtime:.6f}")
-
-    assert beam_max_value <= brute_max_value
-    assert beam_min_value >= brute_min_value
+    # Assertions
+    assert greedy_result.values[0] <= brute_result.values[0]  # Greedy should not overshoot
+    assert greedy_result.values[1] >= brute_result.values[1]  # Greedy should not undershoot
+    assert beam_result.values[0] <= brute_result.values[0]
+    assert beam_result.values[1] >= brute_result.values[1]
 
 
-def write_results_to_csv(results, filename):  # makes csv to make comparison and analysis easier
+def test_subset_finding():
+    """Test subset_finding function."""
+    for Interaction_values in data():
+        for max_size in [3, 4, 5]:
+            result = subset_finding(interaction_values=Interaction_values, max_size=max_size)
+            assert isinstance(result, InteractionValues)
+            assert len(result.values) >= MIN_EXPECTED_VALUES  # At least max and min values
+            assert result.values[0] >= result.values[1]  # max >= min
+
+
+def test_get_subset():
+    """Test get_subset function."""
+    for Interaction_values in data():
+        for max_size in [2, 3, 4]:
+            result = get_subset(Interaction_values, max_size)
+            assert isinstance(result, list)
+            assert all(isinstance(item, tuple) for item in result)
+            # Check that all subsets have size <= max_size
+            assert all(len(item) <= max_size for item in result)
+
+
+def test_greedy_coalition_call():
+    """Test greedy_coalition_call function."""
+    for Interaction_values in data():
+        for max_size in [3, 4, 5]:
+            # Test maximize=True
+            result_max = greedy_coalition_call(Interaction_values, max_size, maximize=True)
+            assert isinstance(result_max, set)
+            assert len(result_max) == max_size
+
+            # Test maximize=False
+            result_min = greedy_coalition_call(Interaction_values, max_size, maximize=False)
+            assert isinstance(result_min, set)
+            assert len(result_min) == max_size
+
+
+def test_beam_search_coalition_call():
+    """Test beam_search_coalition_call function."""
+    for Interaction_values in data():
+        for max_size in [3, 4, 5]:
+            result = beam_search_coalition_call(Interaction_values, max_size, beam_width=3)
+            assert isinstance(result, InteractionValues)
+            assert len(result.values) >= MIN_EXPECTED_VALUES  # At least max and min values
+            assert result.values[0] >= result.values[1]  # max >= min
+
+
+def test_greedy_coalition():
+    """Test greedy_coalition function."""
+    for Interaction_values in data():
+        for max_size in [3, 4, 5]:
+            result = greedy_coalition(Interaction_values, max_size)
+            assert isinstance(result, InteractionValues)
+            assert len(result.values) >= MIN_EXPECTED_VALUES  # At least max and min values
+            assert result.values[0] >= result.values[1]  # max >= min
+
+
+def test_beam_search_coalition():
+    """Test beam_search_coalition function."""
+    for Interaction_values in data():
+        for max_size in [3, 4, 5]:
+            result = beam_search_coalition(Interaction_values, max_size)
+            assert isinstance(result, InteractionValues)
+            assert len(result.values) >= MIN_EXPECTED_VALUES  # At least max and min values
+            assert result.values[0] >= result.values[1]  # max >= min
+
+
+def test_recursive_greedy_coalition():
+    """Test beam_search_coalition function."""
+    for Interaction_values in data():
+        for max_size in [3, 4, 5]:
+            result = recursive_greedy_coalition(Interaction_values, max_size)
+            assert isinstance(result, InteractionValues)
+            assert len(result.values) >= MIN_EXPECTED_VALUES  # At least max and min values
+            assert result.values[0] >= result.values[1]  # max >= min
+
+
+def test_edge_cases():
+    """Test edge cases and error conditions."""
+    for Interaction_values in data():
+        n_players = Interaction_values.n_players
+
+        # Test with max_size = 1
+        result = brute_force(Interaction_values, 1)
+        assert isinstance(result, InteractionValues)
+        assert len(result.values) >= MIN_EXPECTED_VALUES
+
+        # Test with max_size = n_players
+        result = brute_force(Interaction_values, n_players)
+        assert isinstance(result, InteractionValues)
+        assert len(result.values) >= MIN_EXPECTED_VALUES
+
+        # Test greedy with max_size = 1
+        result = greedy_coalition(Interaction_values, 1)
+        assert isinstance(result, InteractionValues)
+        assert len(result.values) >= MIN_EXPECTED_VALUES
+
+        # Test beam search with max_size = 1
+        result = beam_search_coalition(Interaction_values, 1)
+        assert isinstance(result, InteractionValues)
+        assert len(result.values) >= MIN_EXPECTED_VALUES
+
+        # Test beam search with max_size = 1
+        result = recursive_greedy_coalition(Interaction_values, 1)
+        assert isinstance(result, InteractionValues)
+        assert len(result.values) >= MIN_EXPECTED_VALUES
+
+
+def test_check_edge_cases():
+    """Test the check_edge_cases function directly."""
+    for Interaction_values in data():
+        n_players = Interaction_values.n_players
+
+        # Test valid inputs (should not raise any error)
+        check_edge_cases(Interaction_values, 1)
+        check_edge_cases(Interaction_values, n_players // 2)
+        check_edge_cases(Interaction_values, n_players)
+
+        # Test with max_size > n_players (should raise ValueError)
+        with pytest.raises(ValueError, match="Max_size is larger than the amount of features"):
+            check_edge_cases(Interaction_values, n_players + 1)
+
+        # Test with max_size = 0 (should raise ValueError)
+        with pytest.raises(ValueError, match="Max_size 0 or smaller"):
+            check_edge_cases(Interaction_values, 0)
+
+        # Test with max_size = -1 (should raise ValueError)
+        with pytest.raises(ValueError, match="Max_size 0 or smaller"):
+            check_edge_cases(Interaction_values, -1)
+
+        # Test with wrong type for Interaction_values (should raise TypeError)
+        with pytest.raises(TypeError, match="Did not pass an InteractionValues object"):
+            check_edge_cases("not an InteractionValues object", 1)
+
+
+def test_error_handling():
+    """Test error handling for invalid inputs."""
+    for Interaction_values in data():
+        n_players = Interaction_values.n_players
+
+        # Test with max_size > n_players (should raise ValueError)
+        with pytest.raises(ValueError, match="Max_size is larger than the amount of features"):
+            brute_force(Interaction_values, n_players + 1)
+
+        # Test with max_size = 0 (should raise ValueError)
+        with pytest.raises(ValueError, match="Max_size 0 or smaller"):
+            brute_force(Interaction_values, 0)
+
+        # Test with max_size = -1 (should raise ValueError)
+        with pytest.raises(ValueError, match="Max_size 0 or smaller"):
+            brute_force(Interaction_values, -1)
+
+        # Test with wrong type for Interaction_values (should raise TypeError)
+        with pytest.raises(TypeError, match="Did not pass an InteractionValues object"):
+            brute_force("not an InteractionValues object", 1)
+
+
+def write_results_to_csv(results, filename):
+    """Write results to a CSV file."""
     keys = results[0].keys()
-    with open(filename, "w", newline="") as f:
+    with Path(filename).open("w", newline="") as f:
         dict_writer = csv.DictWriter(f, fieldnames=keys)
         dict_writer.writeheader()
         dict_writer.writerows(results)
 
 
-def run_all_tests_multiple_times(
-    num_runs=100,
-):  # runs all tests multiple times. This was supposed to compare the algos with bigger sample size
+def overlap(a, b, max_size):
+    """Compute the overlap ratio between two sets."""
+    return len(a.intersection(b)) / max_size
+
+
+def run_all_tests_multiple_times(num_runs=100):
+    """Run all coalition finding methods multiple times and log the results."""
     all_results = []
     for run in range(num_runs):
         for max_size in [5, 6, 7, "n_players"]:
@@ -173,60 +249,82 @@ def run_all_tests_multiple_times(
                 current_max_size = (
                     max_size if max_size != "n_players" else Interaction_values.n_players
                 )
-                # Prepare explanation_dict
-                single_values = Interaction_values.get_n_order_values(1)
-                pairwise_values = Interaction_values.get_n_order_values(2)
-                nodes = {i: single_values[i] for i in range(len(single_values))}
-                edges = {}
-                for i in range(len(pairwise_values)):
-                    for j in range(i + 1, len(pairwise_values)):
-                        edges[frozenset({i, j})] = pairwise_values[i][j]
-                hyperedges = {}
-                explanation_dict = {
-                    "bias": Interaction_values.baseline_value,
-                    "nodes": nodes,
-                    "edges": edges,
-                    "hyperedges": hyperedges,
-                }
-
                 # Brute force
                 start = time.perf_counter()
-                brute_min, brute_max = brute_force(Interaction_values, current_max_size)
+                brute_result = brute_force(Interaction_values, current_max_size)
                 t_brute = time.perf_counter() - start
+
+                try:
+                    keys = [k for k in brute_result.interaction_lookup if len(k) > 0]
+                    if len(keys) == 1:
+                        only_key = keys[0]
+                        brute_max_set = brute_min_set = set(only_key)
+                    else:
+                        brute_max_set = set(
+                            next(k for k, v in brute_result.interaction_lookup.items() if v == 0)
+                        )
+                        brute_min_set = set(
+                            next(k for k, v in brute_result.interaction_lookup.items() if v == 1)
+                        )
+                except StopIteration as err:
+                    debug_message = (
+                        "Could not find max or min coalition in brute_result.interaction_lookup"
+                    )
+                    raise RuntimeError(debug_message) from err
 
                 # Greedy
                 start = time.perf_counter()
-                greedy_min = greedy_coalition(Interaction_values, current_max_size, maximize=False)
-                greedy_max = greedy_coalition(Interaction_values, current_max_size, maximize=True)
+                greedy_result = greedy_coalition(Interaction_values, current_max_size)
                 t_greedy = time.perf_counter() - start
+                keys = [k for k in greedy_result.interaction_lookup if len(k) > 0]
+                if len(keys) == 1:
+                    only_key = keys[0]
+                    greedy_max_set = greedy_min_set = set(only_key)
+                else:
+                    greedy_max_set = set(
+                        next(k for k, v in greedy_result.interaction_lookup.items() if v == 0)
+                    )
+                    greedy_min_set = set(
+                        next(k for k, v in greedy_result.interaction_lookup.items() if v == 1)
+                    )
 
                 # Beam
                 start = time.perf_counter()
-                beam_min = beam_search_coalition(
-                    Interaction_values, current_max_size, beam_width=3, maximize=False
-                )
-                beam_max = beam_search_coalition(
-                    Interaction_values, current_max_size, beam_width=3, maximize=True
-                )
+                beam_result = beam_search_coalition(Interaction_values, current_max_size)
                 t_beam = time.perf_counter() - start
-
-                # Scores
-                def overlap(a, b):
-                    return len(a.intersection(set(b))) / current_max_size
+                keys = [k for k in beam_result.interaction_lookup if len(k) > 0]
+                if len(keys) == 1:
+                    only_key = keys[0]
+                    beam_max_set = beam_min_set = set(only_key)
+                else:
+                    beam_max_set = set(
+                        next(k for k, v in beam_result.interaction_lookup.items() if v == 0)
+                    )
+                    beam_min_set = set(
+                        next(k for k, v in beam_result.interaction_lookup.items() if v == 1)
+                    )
 
                 record = {
                     "run": run + 1,
                     "max_size": current_max_size,
-                    "greedy_overlap_min": round(overlap(greedy_min, brute_min), 2),
-                    "greedy_overlap_max": round(overlap(greedy_max, brute_max), 2),
-                    "beam_overlap_min": round(overlap(beam_min, brute_min), 2),
-                    "beam_overlap_max": round(overlap(beam_max, brute_max), 2),
+                    "greedy_overlap_min": round(
+                        overlap(greedy_min_set, brute_min_set, current_max_size), 2
+                    ),
+                    "greedy_overlap_max": round(
+                        overlap(greedy_max_set, brute_max_set, current_max_size), 2
+                    ),
+                    "beam_overlap_min": round(
+                        overlap(beam_min_set, brute_min_set, current_max_size), 2
+                    ),
+                    "beam_overlap_max": round(
+                        overlap(beam_max_set, brute_max_set, current_max_size), 2
+                    ),
                     "runtime_brute": round(t_brute, 6),
                     "runtime_greedy": round(t_greedy, 6),
                     "runtime_beam": round(t_beam, 6),
                 }
                 all_results.append(record)
-    write_results_to_csv(all_results, os.path.join(os.getcwd(), "coalition_comparison_results.csv"))
+    write_results_to_csv(all_results, Path.cwd() / "coalition_comparison_results.csv")
 
 
 # Direkt am Ende einfügen

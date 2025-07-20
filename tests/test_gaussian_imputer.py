@@ -113,11 +113,15 @@ def test_call_gaussian_imputer():
     # Test-Coalitions
     coalitions = rng.integers(0, 2, size=(n_coalitions, n_features))
 
+    # Insert empty coalition
+    empty_coalition = np.zeros((1, n_features), dtype=int)
+    coalitions_with_empty = np.vstack([coalitions, empty_coalition])
+
     # Check if the GaussianImputer can be called with coalitions
-    output = imputer(coalitions=coalitions)
+    output = imputer(coalitions=coalitions_with_empty)
 
     assert isinstance(output, np.ndarray), "Output should be a numpy array."
-    assert output.shape == (n_coalitions,), f"Output shape should be ({n_coalitions},)."
+    assert output.shape == (n_coalitions+1,), f"Output shape should be ({n_coalitions+1},)."
     assert np.all(np.isfinite(output)), "Output should be finite."
     assert np.issubdtype(output.dtype, np.number), "Output should be numeric."
 

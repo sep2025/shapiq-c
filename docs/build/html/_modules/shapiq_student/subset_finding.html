@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>shapiq_student.subset_finding - shapiq-c 0.0.1 documentation</title>
+        <title>shapiq_student.subset_finding - [SEP_SoSe2025 / Gruppe C] Game Theoretic Explainable Artificial Intelligence</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">shapiq-c 0.0.1 documentation</div></a>
+      <a href="../../index.html"><div class="brand">[SEP_SoSe2025 / Gruppe C] Game Theoretic Explainable Artificial Intelligence</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -188,8 +188,11 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../_static/SEP_Logo.png" alt="Logo"/>
+  </div>
   
-  <span class="sidebar-brand-text">shapiq-c 0.0.1 documentation</span>
+  <span class="sidebar-brand-text">[SEP_SoSe2025 / Gruppe C] Game Theoretic Explainable Artificial Intelligence</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -199,8 +202,10 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../shapiq_student.html">shapiq_student package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tests.html">tests package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">shapiq_student</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of shapiq_student</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../shapiq_student.html">shapiq_student package</a></li>
+</ul>
+</li>
 </ul>
 
 </div>
@@ -236,45 +241,326 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for shapiq_student.subset_finding</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">combinations</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span></span><span class="sd">&quot;&quot;&quot;Module for finding the maximum and minimum coalitions of an InteractionValues object using brute force, greedy, beam search, and recursive search algorithms.&quot;&quot;&quot;</span>
 
-<span class="c1">#aktuell noch brute force für test setup, einfach mit zu testender function replacen</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">combinations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">shapiq</span><span class="w"> </span><span class="kn">import</span> <span class="n">InteractionValues</span>
+
 <div class="viewcode-block" id="subset_finding">
 <a class="viewcode-back" href="../../shapiq_student.html#shapiq_student.subset_finding.subset_finding">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">subset_finding</span><span class="p">(</span><span class="n">interaction_values</span><span class="p">,</span> <span class="n">max_size</span><span class="p">):</span>
-    <span class="n">minNum</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
-    <span class="n">maxNum</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;-inf&quot;</span><span class="p">)</span>
-    <span class="n">minCol</span> <span class="o">=</span> <span class="n">maxCol</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">max_size</span><span class="p">)</span>
-    <span class="n">indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">interaction_values</span><span class="o">.</span><span class="n">n_players</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">combo</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">max_size</span><span class="p">):</span>
-        <span class="n">coalition</span> <span class="o">=</span> <span class="n">interaction_values</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">combo</span><span class="p">))</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">coalition</span><span class="o">&lt;</span><span class="n">minNum</span><span class="p">:</span> 
-            <span class="n">minNum</span> <span class="o">=</span> <span class="n">coalition</span> 
-            <span class="n">minCol</span> <span class="o">=</span> <span class="n">combo</span>
-        <span class="k">if</span> <span class="n">coalition</span><span class="o">&gt;</span><span class="n">maxNum</span><span class="p">:</span> 
-            <span class="n">maxNum</span> <span class="o">=</span> <span class="n">coalition</span> 
-            <span class="n">maxCol</span> <span class="o">=</span> <span class="n">combo</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">minCol</span><span class="p">,</span> <span class="n">maxCol</span><span class="p">]</span></div>
+<span class="k">def</span><span class="w"> </span><span class="nf">subset_finding</span><span class="p">(</span>
+    <span class="n">Interaction_values</span><span class="p">:</span> <span class="n">InteractionValues</span><span class="p">,</span> <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span>   
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InteractionValues</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find the maximum and minimum coalitions of size l using the best algorithms we found for max and min coalitions.</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        interaction_values: The Interaction_Values object from which the maximum and minimum coalition are to be determined</span>
+<span class="sd">        max_size: The maximum length of the coalition to be found.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The InteractionValues object of the maximum and minimum coalition.</span>
+<span class="sd">    &quot;&quot;&quot;</span>     
+    <span class="k">return</span> <span class="n">recursive_greedy_coalition</span><span class="p">(</span><span class="n">Interaction_values</span><span class="p">,</span> <span class="n">max_size</span><span class="p">)</span></div>
 
 
-<span class="c1">#brute force function für korrekte Lösung für Tests</span>
 <div class="viewcode-block" id="brute_force">
 <a class="viewcode-back" href="../../shapiq_student.html#shapiq_student.subset_finding.brute_force">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">brute_force</span><span class="p">(</span><span class="n">InteractionValues</span><span class="p">,</span><span class="n">max_value</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">brute_force</span><span class="p">(</span>
+    <span class="n">Interaction_values</span><span class="p">:</span> <span class="n">InteractionValues</span><span class="p">,</span> <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">InteractionValues</span><span class="p">,</span> <span class="n">InteractionValues</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Brute force method for the minimum and maximum coalitions of size l. Used for having the correct output for testing.</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        Interaction_values: The Interaction_Values object from which the minimum and maximum coalition are to be determined.</span>
+<span class="sd">        max_size: The maximum length of the coalition to be found.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple of the InteractionValues object of the minimum and maximum coalition.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">minNum</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
     <span class="n">maxNum</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;-inf&quot;</span><span class="p">)</span>
-    <span class="n">minCol</span> <span class="o">=</span> <span class="n">MaxCol</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">max_value</span><span class="p">)</span>
+    <span class="n">minCol</span> <span class="o">=</span> <span class="n">maxCol</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">InteractionValues</span><span class="o">.</span><span class="n">n_players</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">combo</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">max_value</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">combo</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">max_size</span><span class="p">):</span>
         <span class="n">coalition</span> <span class="o">=</span> <span class="n">InteractionValues</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">combo</span><span class="p">))</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">coalition</span><span class="o">&lt;</span><span class="n">minNum</span><span class="p">:</span> 
             <span class="n">minNum</span> <span class="o">=</span> <span class="n">coalition</span> 
             <span class="n">minCol</span> <span class="o">=</span> <span class="n">combo</span>
         <span class="k">if</span> <span class="n">coalition</span><span class="o">&gt;</span><span class="n">maxNum</span><span class="p">:</span> 
             <span class="n">maxNum</span> <span class="o">=</span> <span class="n">coalition</span> 
-            <span class="n">MaxCol</span> <span class="o">=</span> <span class="n">combo</span>
-    <span class="k">return</span><span class="p">(</span><span class="n">minCol</span><span class="p">,</span><span class="n">MaxCol</span><span class="p">)</span></div>
+            <span class="n">maxCol</span> <span class="o">=</span> <span class="n">combo</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">minCol</span><span class="p">),</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">maxCol</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="greedy_coalition">
+<a class="viewcode-back" href="../../shapiq_student.html#shapiq_student.subset_finding.greedy_coalition">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">greedy_coalition</span><span class="p">(</span>
+    <span class="n">interaction_values</span><span class="p">:</span> <span class="n">InteractionValues</span><span class="p">,</span> <span class="n">coalition_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">maximize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Finds a coalition of the given size maximizing or minimizing the subset value.&quot;&quot;&quot;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">interaction_values</span><span class="o">.</span><span class="n">n_players</span><span class="p">))</span>
+    <span class="n">selected</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">remaining</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">coalition_size</span> <span class="ow">and</span> <span class="n">remaining</span><span class="p">:</span>
+        <span class="n">best_feature</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">best_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;-inf&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">maximize</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">remaining</span><span class="p">:</span>
+            <span class="n">candidate</span> <span class="o">=</span> <span class="n">selected</span> <span class="o">|</span> <span class="p">{</span><span class="n">f</span><span class="p">}</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">interaction_values</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">maximize</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="n">best_value</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">maximize</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">best_value</span><span class="p">):</span>
+                <span class="n">best_value</span> <span class="o">=</span> <span class="n">val</span>
+                <span class="n">best_feature</span> <span class="o">=</span> <span class="n">f</span>
+
+        <span class="k">if</span> <span class="n">best_feature</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="n">selected</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">best_feature</span><span class="p">)</span>
+        <span class="n">remaining</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">best_feature</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">selected</span></div>
+
+
+
+<div class="viewcode-block" id="beam_search_coalition">
+<a class="viewcode-back" href="../../shapiq_student.html#shapiq_student.subset_finding.beam_search_coalition">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">beam_search_coalition</span><span class="p">(</span>
+    <span class="n">interaction_values</span><span class="p">:</span> <span class="n">InteractionValues</span><span class="p">,</span>
+    <span class="n">coalition_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">beam_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="n">maximize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Beam Search for best coalition of coalition size.&quot;&quot;&quot;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">interaction_values</span><span class="o">.</span><span class="n">n_players</span><span class="p">))</span>
+    <span class="n">beam</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">()]</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">coalition_size</span><span class="p">):</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">coalition</span> <span class="ow">in</span> <span class="n">beam</span><span class="p">:</span>
+            <span class="n">remaining</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">-</span> <span class="n">coalition</span>
+            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">remaining</span><span class="p">:</span>
+                <span class="n">new_set</span> <span class="o">=</span> <span class="n">coalition</span> <span class="o">|</span> <span class="p">{</span><span class="n">feature</span><span class="p">}</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">interaction_values</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">new_set</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                <span class="n">score</span> <span class="o">=</span> <span class="o">-</span><span class="n">value</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">maximize</span> <span class="k">else</span> <span class="n">value</span>
+                <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">new_set</span><span class="p">))</span>
+
+        <span class="n">top_candidates</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">heapq</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="n">beam_width</span><span class="p">,</span> <span class="n">candidates</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">maximize</span>
+            <span class="k">else</span> <span class="n">heapq</span><span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span><span class="n">beam_width</span><span class="p">,</span> <span class="n">candidates</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">beam</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">top_candidates</span><span class="p">]</span>
+
+    <span class="n">best</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="nb">max</span><span class="p">(</span><span class="n">beam</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">interaction_values</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">maximize</span>
+        <span class="k">else</span> <span class="nb">min</span><span class="p">(</span><span class="n">beam</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">interaction_values</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">best</span></div>
+
+
+
+<div class="viewcode-block" id="recursive_greedy_coalition_max">
+<a class="viewcode-back" href="../../shapiq_student.html#shapiq_student.subset_finding.recursive_greedy_coalition_max">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">recursive_greedy_coalition_max</span><span class="p">(</span>
+    <span class="n">Interaction_values</span><span class="p">:</span> <span class="n">InteractionValues</span><span class="p">,</span> <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">checked</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to find the maximum value coalition using recursive greedy search.</span>
+<span class="sd">    Parameters: </span>
+<span class="sd">        Interaction_values: The Interaction_Values object from which the maximum coalition is to be determined</span>
+<span class="sd">        max_size: The maximum length of the coalition to be found</span>
+<span class="sd">        path: The current path of the coalition being explored</span>
+<span class="sd">        checked: The set of already checked coalitions to avoid duplicates</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        A tuple containing the maximum value of any checked coalition and a list containing the indices of said coalition </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">best</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">best_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;-inf&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">n_players</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;-inf&quot;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">get_subset</span><span class="p">([</span><span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="n">next_indices</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">heapq</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">n_players</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">values</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">next_indices</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">frozenset</span><span class="p">([</span><span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span> <span class="ow">in</span> <span class="n">checked</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">checked</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">([</span><span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="n">i</span><span class="p">]))</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="n">max_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">max_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">max_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;-inf&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">n_players</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+                    <span class="n">path_value</span> <span class="o">=</span> <span class="n">Interaction_values</span><span class="o">.</span><span class="n">get_subset</span><span class="p">([</span><span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">path_value</span> <span class="o">&gt;</span> <span class="n">max_value</span><span class="p">:</span>
+                        <span class="n">max_value</span> <span class="o">=</span> <span class="n">path_value</span>
+                        <span class="n">max_index</span> <span class="o">=</span> <span class="n">j</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">max_index</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">max_value</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">value</span><span class="p">,</span> <span class="n">subset</span> <span class="o">=</span> <span class="n">recursive_greedy_coalition_max</span><span class="p">(</span>
+            <span class="n">checked</span><span class="p">,</span> <span class="n">Interaction_values</span><span class="p">,</span> <span class="n">max_size</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">best_value</span><span class="p">:</span>
+            <span class="n">best_value</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">best</span> <span class="o">=</span> <span class="n">subset</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">best_value</span><span class="p">,</span> <span class="n">best</span></div>
+
+
+
+<div class="viewcode-block" id="recursive_greedy_coalition_min">
+<a class="viewcode-back" href="../../shapiq_student.html#shapiq_student.subset_finding.recursive_greedy_coalition_min">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">recursive_greedy_coalition_min</span><span class="p">(</span>
+    <span class="n">checked</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">],</span> <span class="n">Interaction_values</span><span class="p">:</span> <span class="n">InteractionValues</span><span class="p">,</span> <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to find the minimum value coalition using recursive greedy search.</span>
+<span class="sd">    Parameters: </span>
+<span class="sd">        Interaction_values: The Interaction_Values object from which the minimum coalition is to be determined</span>
+<span class="sd">        max_size: The minimum length of the coalition to be found</span>
+<span class="sd">        path: The current path of the coalition being explored</span>
+<span class="sd">        checked: The set of already checked coalitions to avoid duplicates</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        A tuple containing the minimum value of any checked coalition and a list containing the indices of said coalition </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">best</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">best_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">n_players</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">get_subset</span><span class="p">([</span><span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="n">next_indices</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">heapq</span><span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">n_players</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">values</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">next_indices</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">frozenset</span><span class="p">([</span><span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span> <span class="ow">in</span> <span class="n">checked</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">checked</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">([</span><span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="n">i</span><span class="p">]))</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="n">max_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">min_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">min_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">n_players</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+                    <span class="n">path_value</span> <span class="o">=</span> <span class="n">Interaction_values</span><span class="o">.</span><span class="n">get_subset</span><span class="p">([</span><span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">path_value</span> <span class="o">&lt;</span> <span class="n">min_value</span><span class="p">:</span>
+                        <span class="n">min_value</span> <span class="o">=</span> <span class="n">path_value</span>
+                        <span class="n">min_index</span> <span class="o">=</span> <span class="n">j</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">min_index</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">min_value</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">value</span><span class="p">,</span> <span class="n">subset</span> <span class="o">=</span> <span class="n">recursive_greedy_coalition_min</span><span class="p">(</span>
+            <span class="n">checked</span><span class="p">,</span> <span class="n">Interaction_values</span><span class="p">,</span> <span class="n">max_size</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="n">best_value</span><span class="p">:</span>
+            <span class="n">best_value</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">best</span> <span class="o">=</span> <span class="n">subset</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">best_value</span><span class="p">,</span> <span class="n">best</span></div>
+
+
+
+<div class="viewcode-block" id="recursive_greedy_coalition">
+<a class="viewcode-back" href="../../shapiq_student.html#shapiq_student.subset_finding.recursive_greedy_coalition">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">recursive_greedy_coalition</span><span class="p">(</span>
+    <span class="n">Interaction_values</span><span class="p">:</span> <span class="n">InteractionValues</span><span class="p">,</span> <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InteractionValues</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to return the maximum and minimum coalitions of size l using a recursive greedy approach.</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        Interaction_values: The Interaction_Values object from which the maximum and minimum coalition are to be determined</span>
+<span class="sd">        max_size: The maximum length of the coalition to be found</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The InteractionValues object of the maximum and minimum coalition</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">min_subset</span> <span class="o">=</span> <span class="n">recursive_greedy_coalition_min</span><span class="p">(</span><span class="nb">set</span><span class="p">(),</span> <span class="n">Interaction_values</span><span class="p">,</span> <span class="n">max_size</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="n">max_subset</span> <span class="o">=</span> <span class="n">recursive_greedy_coalition_max</span><span class="p">(</span><span class="nb">set</span><span class="p">(),</span> <span class="n">Interaction_values</span><span class="p">,</span> <span class="n">max_size</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="n">interaction</span> <span class="o">=</span> <span class="n">InteractionValues</span><span class="p">(</span>
+        <span class="n">values</span><span class="o">=</span><span class="p">(</span><span class="n">max_subset</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">min_subset</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> 
+        <span class="n">interaction_lookup</span><span class="o">=</span><span class="p">{(</span><span class="n">max_subset</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">min_subset</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span><span class="mi">1</span><span class="p">},</span> 
+        <span class="n">index</span><span class="o">=</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+        <span class="n">max_order</span><span class="o">=</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">max_order</span><span class="p">,</span>
+        <span class="n">n_players</span><span class="o">=</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">n_players</span><span class="p">,</span>
+        <span class="n">min_order</span><span class="o">=</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">min_order</span><span class="p">,</span>
+        <span class="n">baseline_value</span><span class="o">=</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">baseline_value</span><span class="p">,)</span>
+    <span class="k">return</span> <span class="n">interaction</span></div>
+
+
+<div class="viewcode-block" id="recursive_greedy_min_coalition">
+<a class="viewcode-back" href="../../shapiq_student.html#shapiq_student.subset_finding.recursive_greedy_min_coalition">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">recursive_greedy_min_coalition</span><span class="p">(</span>
+    <span class="n">Interaction_values</span><span class="p">:</span> <span class="n">InteractionValues</span><span class="p">,</span> <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InteractionValues</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to return the minimum coalition of size l using a recursive greedy approach.</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        Interaction_values: The Interaction_Values object from which the minimum coalition is to be determined</span>
+<span class="sd">        max_size: The maximum length of the coalition to be found</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The InteractionValues object of the minimum coalition</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">min_subset</span> <span class="o">=</span> <span class="n">recursive_greedy_coalition_min</span><span class="p">(</span><span class="nb">set</span><span class="p">(),</span> <span class="n">Interaction_values</span><span class="p">,</span> <span class="n">max_size</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="n">interaction_min</span> <span class="o">=</span> <span class="n">InteractionValues</span><span class="p">(</span>
+        <span class="n">values</span><span class="o">=</span><span class="p">(</span><span class="n">min_subset</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> 
+        <span class="n">interaction_lookup</span><span class="o">=</span><span class="p">{(</span><span class="n">min_subset</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span><span class="mi">0</span><span class="p">},</span> 
+        <span class="n">index</span><span class="o">=</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+        <span class="n">max_order</span><span class="o">=</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">max_order</span><span class="p">,</span>
+        <span class="n">n_players</span><span class="o">=</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">n_players</span><span class="p">,</span>
+        <span class="n">min_order</span><span class="o">=</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">min_order</span><span class="p">,</span>
+        <span class="n">baseline_value</span><span class="o">=</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">baseline_value</span><span class="p">,)</span>
+    <span class="k">return</span> <span class="n">interaction_min</span></div>
+
+
+<div class="viewcode-block" id="recursive_greedy_max_coalition">
+<a class="viewcode-back" href="../../shapiq_student.html#shapiq_student.subset_finding.recursive_greedy_max_coalition">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">recursive_greedy_max_coalition</span><span class="p">(</span>
+    <span class="n">Interaction_values</span><span class="p">:</span> <span class="n">InteractionValues</span><span class="p">,</span> <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InteractionValues</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to return the maximum coalition of size l using a recursive greedy approach.</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        Interaction_values: The Interaction_Values object from which the maximum coalition is to be determined</span>
+<span class="sd">        max_size: The maximum length of the coalition to be found</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The InteractionValues object of the maximum coalition</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">max_subset</span> <span class="o">=</span> <span class="n">recursive_greedy_coalition_max</span><span class="p">(</span><span class="nb">set</span><span class="p">(),</span> <span class="n">Interaction_values</span><span class="p">,</span> <span class="n">max_size</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="n">interaction_max</span> <span class="o">=</span> <span class="n">InteractionValues</span><span class="p">(</span>
+        <span class="n">values</span><span class="o">=</span><span class="p">(</span><span class="n">max_subset</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> 
+        <span class="n">interaction_lookup</span><span class="o">=</span><span class="p">{(</span><span class="n">max_subset</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span><span class="mi">0</span><span class="p">},</span> 
+        <span class="n">index</span><span class="o">=</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+        <span class="n">max_order</span><span class="o">=</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">max_order</span><span class="p">,</span>
+        <span class="n">n_players</span><span class="o">=</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">n_players</span><span class="p">,</span>
+        <span class="n">min_order</span><span class="o">=</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">min_order</span><span class="p">,</span>
+        <span class="n">baseline_value</span><span class="o">=</span><span class="n">Interaction_values</span><span class="o">.</span><span class="n">baseline_value</span><span class="p">,)</span>
+    <span class="k">return</span> <span class="n">interaction_max</span></div>
+
+
+
+<div class="viewcode-block" id="get_subset">
+<a class="viewcode-back" href="../../shapiq_student.html#shapiq_student.subset_finding.get_subset">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_subset</span><span class="p">(</span><span class="n">interaction_values</span><span class="p">:</span> <span class="n">InteractionValues</span><span class="p">,</span> <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return all subsets of features up to given size as list of tuples.&quot;&quot;&quot;</span>
+    <span class="n">n_players</span> <span class="o">=</span> <span class="n">interaction_values</span><span class="o">.</span><span class="n">n_players</span>  <span class="c1"># &lt;- Fix hier</span>
+    <span class="n">feature_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_players</span><span class="p">))</span>
+
+    <span class="n">all_subsets</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">size</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">all_subsets</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">combinations</span><span class="p">(</span><span class="n">feature_indices</span><span class="p">,</span> <span class="n">size</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">all_subsets</span><span class="p">)</span></div>
 
 </pre></div>
         </article>
@@ -288,7 +574,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2025, Heeso Park
+                Copyright &#169; 
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             

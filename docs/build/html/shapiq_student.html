@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="tests package" href="tests.html" /><link rel="prev" title="[SEP_SoSe2025 / Gruppe C] Game Theoretic Explainable Artificial Intelligence" href="index.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="shapiq_student" href="modules.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>shapiq_student package - shapiq-c 0.0.1 documentation</title>
+        <title>shapiq_student package - [SEP_SoSe2025 / Gruppe C] Game Theoretic Explainable Artificial Intelligence</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">shapiq-c 0.0.1 documentation</div></a>
+      <a href="index.html"><div class="brand">[SEP_SoSe2025 / Gruppe C] Game Theoretic Explainable Artificial Intelligence</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -189,8 +189,11 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/SEP_Logo.png" alt="Logo"/>
+  </div>
   
-  <span class="sidebar-brand-text">shapiq-c 0.0.1 documentation</span>
+  <span class="sidebar-brand-text">[SEP_SoSe2025 / Gruppe C] Game Theoretic Explainable Artificial Intelligence</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -200,8 +203,10 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">shapiq_student package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tests.html">tests package</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">shapiq_student</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of shapiq_student</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">shapiq_student package</a></li>
+</ul>
+</li>
 </ul>
 
 </div>
@@ -300,86 +305,6 @@ are averaged to provide a stable overall attribution.</p>
 </dl>
 </dd></dl>
 
-</dd></dl>
-
-</section>
-<section id="module-shapiq_student.coalition_finder">
-<span id="shapiq-student-coalition-finder-module"></span><h2>shapiq_student.coalition_finder module<a class="headerlink" href="#module-shapiq_student.coalition_finder" title="Link to this heading">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="shapiq_student.coalition_finder.beam_search_coalition">
-<span class="sig-prename descclassname"><span class="pre">shapiq_student.coalition_finder.</span></span><span class="sig-name descname"><span class="pre">beam_search_coalition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explanation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beam_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/coalition_finder.html#beam_search_coalition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.coalition_finder.beam_search_coalition" title="Link to this definition">¶</a></dt>
-<dd><p>Beam Search for best coalition of size l.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>explanation</strong> (<em>dict</em>)</p></li>
-<li><p><strong>l</strong> (<em>int</em>)</p></li>
-<li><p><strong>beam_width</strong> (<em>int</em>)</p></li>
-<li><p><strong>maximize</strong> (<em>bool</em>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>set</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="shapiq_student.coalition_finder.compute_value">
-<span class="sig-prename descclassname"><span class="pre">shapiq_student.coalition_finder.</span></span><span class="sig-name descname"><span class="pre">compute_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explanation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/coalition_finder.html#compute_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.coalition_finder.compute_value" title="Link to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>S</strong> (<em>Set</em><em>[</em><em>int</em><em>]</em>)</p></li>
-<li><p><strong>explanation</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="shapiq_student.coalition_finder.greedy_coalition">
-<span class="sig-prename descclassname"><span class="pre">shapiq_student.coalition_finder.</span></span><span class="sig-name descname"><span class="pre">greedy_coalition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explanation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/coalition_finder.html#greedy_coalition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.coalition_finder.greedy_coalition" title="Link to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>explanation</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
-<li><p><strong>l</strong> (<em>int</em>)</p></li>
-<li><p><strong>maximize</strong> (<em>bool</em>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Set</em>[int]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="shapiq_student.coalition_finder.recursive_greedy_coalition">
-<span class="sig-prename descclassname"><span class="pre">shapiq_student.coalition_finder.</span></span><span class="sig-name descname"><span class="pre">recursive_greedy_coalition</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/coalition_finder.html#recursive_greedy_coalition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.coalition_finder.recursive_greedy_coalition" title="Link to this definition">¶</a></dt>
-<dd><p>Recursive greedy search for best coalition of size l.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>set</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="shapiq_student.coalition_finder.subset_finding">
-<span class="sig-prename descclassname"><span class="pre">shapiq_student.coalition_finder.</span></span><span class="sig-name descname"><span class="pre">subset_finding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/coalition_finder.html#subset_finding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.coalition_finder.subset_finding" title="Link to this definition">¶</a></dt>
-<dd><p>Return all subsets of features up to given size as list of tuples.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>max_size</strong> (<em>int</em>)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
 </dd></dl>
 
 </section>
@@ -508,15 +433,222 @@ It works by conditioning on the known features and sampling the unknown ones acc
 </section>
 <section id="module-shapiq_student.subset_finding">
 <span id="shapiq-student-subset-finding-module"></span><h2>shapiq_student.subset_finding module<a class="headerlink" href="#module-shapiq_student.subset_finding" title="Link to this heading">¶</a></h2>
+<p>Module for finding the maximum and minimum coalitions of an InteractionValues object using brute force, greedy, beam search, and recursive search algorithms.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="shapiq_student.subset_finding.beam_search_coalition">
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">beam_search_coalition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coalition_size</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">beam_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#beam_search_coalition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.beam_search_coalition" title="Link to this definition">¶</a></dt>
+<dd><p>Beam Search for best coalition of coalition size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interaction_values</strong> (<em>InteractionValues</em>)</p></li>
+<li><p><strong>coalition_size</strong> (<em>int</em>)</p></li>
+<li><p><strong>beam_width</strong> (<em>int</em>)</p></li>
+<li><p><strong>maximize</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>set[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="shapiq_student.subset_finding.brute_force">
-<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">brute_force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">InteractionValues</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#brute_force"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.brute_force" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">brute_force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#brute_force"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.brute_force" title="Link to this definition">¶</a></dt>
+<dd><p>Brute force method for the minimum and maximum coalitions of size l. Used for having the correct output for testing.
+:param Interaction_values: The Interaction_Values object from which the minimum and maximum coalition are to be determined.
+:param max_size: The maximum length of the coalition to be found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple of the InteractionValues object of the minimum and maximum coalition.</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Interaction_values</strong> (<em>InteractionValues</em>)</p></li>
+<li><p><strong>max_size</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[<em>InteractionValues</em>, <em>InteractionValues</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="shapiq_student.subset_finding.get_subset">
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">get_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#get_subset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.get_subset" title="Link to this definition">¶</a></dt>
+<dd><p>Return all subsets of features up to given size as list of tuples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interaction_values</strong> (<em>InteractionValues</em>)</p></li>
+<li><p><strong>max_size</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="shapiq_student.subset_finding.greedy_coalition">
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">greedy_coalition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coalition_size</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#greedy_coalition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.greedy_coalition" title="Link to this definition">¶</a></dt>
+<dd><p>Finds a coalition of the given size maximizing or minimizing the subset value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interaction_values</strong> (<em>InteractionValues</em>)</p></li>
+<li><p><strong>coalition_size</strong> (<em>int</em>)</p></li>
+<li><p><strong>maximize</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>set[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="shapiq_student.subset_finding.recursive_greedy_coalition">
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">recursive_greedy_coalition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#recursive_greedy_coalition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.recursive_greedy_coalition" title="Link to this definition">¶</a></dt>
+<dd><p>Function to return the maximum and minimum coalitions of size l using a recursive greedy approach.
+:param Interaction_values: The Interaction_Values object from which the maximum and minimum coalition are to be determined
+:param max_size: The maximum length of the coalition to be found</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The InteractionValues object of the maximum and minimum coalition</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Interaction_values</strong> (<em>InteractionValues</em>)</p></li>
+<li><p><strong>max_size</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>InteractionValues</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="shapiq_student.subset_finding.recursive_greedy_coalition_max">
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">recursive_greedy_coalition_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checked</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#recursive_greedy_coalition_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.recursive_greedy_coalition_max" title="Link to this definition">¶</a></dt>
+<dd><p>Function to find the maximum value coalition using recursive greedy search.
+:param Interaction_values: The Interaction_Values object from which the maximum coalition is to be determined
+:param max_size: The maximum length of the coalition to be found
+:param path: The current path of the coalition being explored
+:param checked: The set of already checked coalitions to avoid duplicates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing the maximum value of any checked coalition and a list containing the indices of said coalition</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Interaction_values</strong> (<em>InteractionValues</em>)</p></li>
+<li><p><strong>max_size</strong> (<em>int</em>)</p></li>
+<li><p><strong>path</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>)</p></li>
+<li><p><strong>checked</strong> (<em>set</em><em>[</em><em>frozenset</em><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[float, set[int]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="shapiq_student.subset_finding.recursive_greedy_coalition_min">
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">recursive_greedy_coalition_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checked</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#recursive_greedy_coalition_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.recursive_greedy_coalition_min" title="Link to this definition">¶</a></dt>
+<dd><p>Function to find the minimum value coalition using recursive greedy search.
+:param Interaction_values: The Interaction_Values object from which the minimum coalition is to be determined
+:param max_size: The minimum length of the coalition to be found
+:param path: The current path of the coalition being explored
+:param checked: The set of already checked coalitions to avoid duplicates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing the minimum value of any checked coalition and a list containing the indices of said coalition</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>checked</strong> (<em>set</em><em>[</em><em>frozenset</em><em>]</em>)</p></li>
+<li><p><strong>Interaction_values</strong> (<em>InteractionValues</em>)</p></li>
+<li><p><strong>max_size</strong> (<em>int</em>)</p></li>
+<li><p><strong>path</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[float, set[int]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="shapiq_student.subset_finding.recursive_greedy_max_coalition">
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">recursive_greedy_max_coalition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#recursive_greedy_max_coalition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.recursive_greedy_max_coalition" title="Link to this definition">¶</a></dt>
+<dd><p>Function to return the maximum coalition of size l using a recursive greedy approach.
+:param Interaction_values: The Interaction_Values object from which the maximum coalition is to be determined
+:param max_size: The maximum length of the coalition to be found</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The InteractionValues object of the maximum coalition</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Interaction_values</strong> (<em>InteractionValues</em>)</p></li>
+<li><p><strong>max_size</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>InteractionValues</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="shapiq_student.subset_finding.recursive_greedy_min_coalition">
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">recursive_greedy_min_coalition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#recursive_greedy_min_coalition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.recursive_greedy_min_coalition" title="Link to this definition">¶</a></dt>
+<dd><p>Function to return the minimum coalition of size l using a recursive greedy approach.
+:param Interaction_values: The Interaction_Values object from which the minimum coalition is to be determined
+:param max_size: The maximum length of the coalition to be found</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The InteractionValues object of the minimum coalition</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Interaction_values</strong> (<em>InteractionValues</em>)</p></li>
+<li><p><strong>max_size</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>InteractionValues</em></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="shapiq_student.subset_finding.subset_finding">
-<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">subset_finding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#subset_finding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.subset_finding" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">shapiq_student.subset_finding.</span></span><span class="sig-name descname"><span class="pre">subset_finding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#subset_finding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding.subset_finding" title="Link to this definition">¶</a></dt>
+<dd><p>Find the maximum and minimum coalitions of size l using the best algorithms we found for max and min coalitions.
+:param interaction_values: The Interaction_Values object from which the maximum and minimum coalition are to be determined
+:param max_size: The maximum length of the coalition to be found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The InteractionValues object of the maximum and minimum coalition.</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Interaction_values</strong> (<em>InteractionValues</em>)</p></li>
+<li><p><strong>max_size</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>InteractionValues</em></p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-shapiq_student.threshold_knn_shapley_explainer">
@@ -711,11 +843,6 @@ It works by conditioning on the known features and sampling the unknown ones acc
 <dd><p>alias of <a class="reference internal" href="#shapiq_student.weighted_knn_explainer.KNNExplainer" title="shapiq_student.weighted_knn_explainer.KNNExplainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">KNNExplainer</span></code></a></p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="shapiq_student.subset_finding">
-<span class="sig-prename descclassname"><span class="pre">shapiq_student.</span></span><span class="sig-name descname"><span class="pre">subset_finding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shapiq_student/subset_finding.html#subset_finding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shapiq_student.subset_finding" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </section>
 </section>
 
@@ -724,23 +851,15 @@ It works by conditioning on the known features and sampling the unknown ones acc
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="tests.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">tests package</div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="index.html">
+          
+          <a class="prev-page" href="modules.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Home</div>
+                <div class="title">shapiq_student</div>
                 
               </div>
             </a>
@@ -748,7 +867,7 @@ It works by conditioning on the known features and sampling the unknown ones acc
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2025, Heeso Park
+                Copyright &#169; 
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -783,14 +902,6 @@ It works by conditioning on the known features and sampling the unknown ones acc
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-shapiq_student.coalition_finder">shapiq_student.coalition_finder module</a><ul>
-<li><a class="reference internal" href="#shapiq_student.coalition_finder.beam_search_coalition"><code class="docutils literal notranslate"><span class="pre">beam_search_coalition()</span></code></a></li>
-<li><a class="reference internal" href="#shapiq_student.coalition_finder.compute_value"><code class="docutils literal notranslate"><span class="pre">compute_value()</span></code></a></li>
-<li><a class="reference internal" href="#shapiq_student.coalition_finder.greedy_coalition"><code class="docutils literal notranslate"><span class="pre">greedy_coalition()</span></code></a></li>
-<li><a class="reference internal" href="#shapiq_student.coalition_finder.recursive_greedy_coalition"><code class="docutils literal notranslate"><span class="pre">recursive_greedy_coalition()</span></code></a></li>
-<li><a class="reference internal" href="#shapiq_student.coalition_finder.subset_finding"><code class="docutils literal notranslate"><span class="pre">subset_finding()</span></code></a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#module-shapiq_student.gaussian_copula_imputer">shapiq_student.gaussian_copula_imputer module</a><ul>
 <li><a class="reference internal" href="#shapiq_student.gaussian_copula_imputer.GaussianCopulaImputer"><code class="docutils literal notranslate"><span class="pre">GaussianCopulaImputer</span></code></a><ul>
 <li><a class="reference internal" href="#shapiq_student.gaussian_copula_imputer.GaussianCopulaImputer.fit"><code class="docutils literal notranslate"><span class="pre">GaussianCopulaImputer.fit()</span></code></a></li>
@@ -808,7 +919,15 @@ It works by conditioning on the known features and sampling the unknown ones acc
 </ul>
 </li>
 <li><a class="reference internal" href="#module-shapiq_student.subset_finding">shapiq_student.subset_finding module</a><ul>
+<li><a class="reference internal" href="#shapiq_student.subset_finding.beam_search_coalition"><code class="docutils literal notranslate"><span class="pre">beam_search_coalition()</span></code></a></li>
 <li><a class="reference internal" href="#shapiq_student.subset_finding.brute_force"><code class="docutils literal notranslate"><span class="pre">brute_force()</span></code></a></li>
+<li><a class="reference internal" href="#shapiq_student.subset_finding.get_subset"><code class="docutils literal notranslate"><span class="pre">get_subset()</span></code></a></li>
+<li><a class="reference internal" href="#shapiq_student.subset_finding.greedy_coalition"><code class="docutils literal notranslate"><span class="pre">greedy_coalition()</span></code></a></li>
+<li><a class="reference internal" href="#shapiq_student.subset_finding.recursive_greedy_coalition"><code class="docutils literal notranslate"><span class="pre">recursive_greedy_coalition()</span></code></a></li>
+<li><a class="reference internal" href="#shapiq_student.subset_finding.recursive_greedy_coalition_max"><code class="docutils literal notranslate"><span class="pre">recursive_greedy_coalition_max()</span></code></a></li>
+<li><a class="reference internal" href="#shapiq_student.subset_finding.recursive_greedy_coalition_min"><code class="docutils literal notranslate"><span class="pre">recursive_greedy_coalition_min()</span></code></a></li>
+<li><a class="reference internal" href="#shapiq_student.subset_finding.recursive_greedy_max_coalition"><code class="docutils literal notranslate"><span class="pre">recursive_greedy_max_coalition()</span></code></a></li>
+<li><a class="reference internal" href="#shapiq_student.subset_finding.recursive_greedy_min_coalition"><code class="docutils literal notranslate"><span class="pre">recursive_greedy_min_coalition()</span></code></a></li>
 <li><a class="reference internal" href="#shapiq_student.subset_finding.subset_finding"><code class="docutils literal notranslate"><span class="pre">subset_finding()</span></code></a></li>
 </ul>
 </li>
@@ -839,7 +958,6 @@ It works by conditioning on the known features and sampling the unknown ones acc
 </ul>
 </li>
 <li><a class="reference internal" href="#shapiq_student.WeightedKNNExplainer"><code class="docutils literal notranslate"><span class="pre">WeightedKNNExplainer</span></code></a></li>
-<li><a class="reference internal" href="#shapiq_student.subset_finding"><code class="docutils literal notranslate"><span class="pre">subset_finding()</span></code></a></li>
 </ul>
 </li>
 </ul>
