@@ -446,7 +446,7 @@ def recursive_greedy_max_coalition(
 
 def get_subset(interaction_values: InteractionValues, max_size: int) -> list:
     """Return all subsets of features up to given size as list of tuples."""
-    n_players = interaction_values.n_players  # <- Fix hier
+    n_players = interaction_values.n_players
     feature_indices = list(range(n_players))
 
     all_subsets = []
