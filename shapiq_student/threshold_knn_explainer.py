@@ -100,7 +100,7 @@ class ThresholdKNNExplainer(Explainer):
     ) -> None:
         """Validate inputs and cache training data."""
         # Accept both KNeighborsClassifier and RadiusNeighborsClassifier
-        if not isinstance(model, (KNeighborsClassifier, RadiusNeighborsClassifier)):
+        if not isinstance(model, KNeighborsClassifier | RadiusNeighborsClassifier):
             msg = "*model* must be a KNeighborsClassifier or RadiusNeighborsClassifier."
             raise TypeError(msg)
         if tau <= 0:
