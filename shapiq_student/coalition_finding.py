@@ -133,7 +133,7 @@ def greedy_coalition_call(
 def greedy_coalition(
     interaction_values: InteractionValues, coalition_size: int
 ) -> InteractionValues:
-"""Find the maximum and minimum coalitions of a given size using a greedy approach.
+    """Find the maximum and minimum coalitions of a given size using a greedy approach.
 This function is a wrapper for `greedy_coalition_call` and simplifies usage by requiring only two parameters.
     
     Parameters:
