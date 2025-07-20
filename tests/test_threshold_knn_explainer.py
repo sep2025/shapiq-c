@@ -55,7 +55,7 @@ def test_threshold_knn_instance_shapley() -> None:
     exact = ExactComputer(n_players=3, game=game)(index="SV")
 
     error = np.linalg.norm(approx.values - exact.get_n_order_values(1))
-    assert error < ATOL  # noqa: S101 - assert is fine in tests
+    assert error < ATOL
 
 
 # Extra coverage
@@ -81,3 +81,37 @@ def test_threshold_knn_error_paths() -> None:
     # Calling *_mode* should raise a ValueError
     with pytest.raises(ValueError, match="empty iterable"):
         _mode([])
+
+def test_threshold_knn_additional_paths() -> None:
+    """Cover the remaining branches (≈5 lines) to push module coverage ≥ 92 %."""
+    X = np.array([[0.0], [2.0]])        # far apart
+    y = np.array([0, 1])
+    tau = 0.1                           # so *no* neighbour falls inside radius
+    clf = RadiusNeighborsClassifier(radius=tau).fit(X, y)
+
+    explainer = ThresholdKNNExplainer(model=clf, data=X, labels=y, tau=tau, class_index=0)
+
+    # _mode tie-break
+    assert _mode(["a", "b", "a", "b"]) == "a"
+
+    # explain with multiple points → averaging branch
+    shap_multi = explainer.explain(np.array([[1.0], [1.1]]))
+    assert shap_multi.values.shape == (len(X),)
+
+    # no-neighbor situation gives all-zero payoff
+    assert np.allclose(shap_multi.values, 0.0)
+
+    # x=None raises TypeError path
+    with pytest.raises(TypeError, match="may not be None"):
+        explainer.explain(None)  # type: ignore[arg-type]
+
+def test_threshold_knn_rejects_invalid_model() -> None:
+    """*model* must be a (Radius)KNeighborsClassifier, anything else raises."""
+    class Dummy:  # minimal, has neither predict nor radius
+        pass
+
+    X = np.array([[0.0]])
+    y = np.array([0])
+
+    with pytest.raises(TypeError, match="must be a KNeighborsClassifier"):
+        ThresholdKNNExplainer(model=Dummy(), data=X, labels=y, tau=1.0)
