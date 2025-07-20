@@ -10,7 +10,7 @@ import numpy as np
 import pytest
 from sklearn.neighbors import KNeighborsClassifier
 
-from shapiq_student.basic_knn_explainer import KNNExplainer
+from shapiq_student.basic_knn_explainer import BasicKNNExplainer
 
 
 @pytest.mark.parametrize(
@@ -29,7 +29,7 @@ def test_knn_shapley_multiple_configs(K, x_test, y_test_class):
     model = KNeighborsClassifier(n_neighbors=K)
     model.fit(X_train, y_train)
 
-    explainer = KNNExplainer(model, X_train, y_train, class_index=y_test_class, K=K)
+    explainer = BasicKNNExplainer(model, X_train, y_train, class_index=y_test_class, K=K)
     values = explainer.explain(x_test).values
 
     assert len(values) == len(X_train)
@@ -45,7 +45,7 @@ def test_knn_explainer_k_larger_than_n():
     model = KNeighborsClassifier(n_neighbors=K)
     model.fit(X_train, y_train)
 
-    explainer = KNNExplainer(model, X_train, y_train, class_index=0, K=K)
+    explainer = BasicKNNExplainer(model, X_train, y_train, class_index=0, K=K)
     values = explainer.explain(x_test).values
 
     assert len(values) == len(X_train)
@@ -61,7 +61,7 @@ def test_knn_explainer_target_class_not_in_majority():
     model = KNeighborsClassifier(n_neighbors=2)
     model.fit(X_train, y_train)
 
-    explainer = KNNExplainer(model, X_train, y_train, class_index=target_class, K=2)
+    explainer = BasicKNNExplainer(model, X_train, y_train, class_index=target_class, K=2)
     values = explainer.explain(x_test).values
 
     assert np.allclose(values, 0), f"Expected all zeros, got: {values}"
@@ -75,7 +75,7 @@ def test_knn_explainer_unequal_data_label_lengths():
     model.fit([[0], [1]], [0, 1])
 
     with pytest.raises(ValueError, match="same length"):
-        KNNExplainer(model, X, y)
+        BasicKNNExplainer(model, X, y)
 
 
 def test_knn_explainer_predicts_when_class_index_none():
@@ -86,7 +86,7 @@ def test_knn_explainer_predicts_when_class_index_none():
     model = KNeighborsClassifier(n_neighbors=1)
     model.fit(X, y)
 
-    explainer = KNNExplainer(model, X, y)  # class_index=None
+    explainer = BasicKNNExplainer(model, X, y)  # class_index=None
     values = explainer.explain(x_test).values
 
     assert len(values) == len(X)

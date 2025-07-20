@@ -48,6 +48,7 @@ class BasicKNNExplainer(Explainer):
         self.model = model
         self.class_index = class_index
         self.K = K if K is not None else model.n_neighbors
+        self.mode = "normal"
 
         msg_len = "Training data and labels must have same length."
         if len(self.X_train) != len(self.y_train):
@@ -120,5 +121,5 @@ class BasicKNNExplainer(Explainer):
             max_order=1,
             min_order=1,
             baseline_value=0.0,
-            n_players=self.X_train.shape[0],
+            n_players=self.X_train.shape[1],
         )

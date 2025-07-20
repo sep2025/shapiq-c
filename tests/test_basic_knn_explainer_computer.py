@@ -11,7 +11,7 @@ import numpy as np
 from shapiq import ExactComputer
 from sklearn.neighbors import KNeighborsClassifier
 
-from shapiq_student.basic_knn_explainer import KNNExplainer
+from shapiq_student.basic_knn_explainer import BasicKNNExplainer
 
 TOLERANCE = 0.25  # Acceptable L2 deviation for numerical comparison
 
@@ -31,7 +31,7 @@ def test_knn_shapley_vs_exact():
     model.fit(X_train, y_train)
 
     # 3. Run the custom KNNExplainer on the test instance
-    explainer = KNNExplainer(model, X_train, y_train, class_index=y_test_class, K=K)
+    explainer = BasicKNNExplainer(model, X_train, y_train, class_index=y_test_class, K=K)
     approx_shapley = explainer.explain(x_test).values
 
     # 4. Define the Shapley game: average label match among top-K neighbors

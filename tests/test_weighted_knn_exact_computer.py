@@ -11,7 +11,7 @@ import numpy as np
 from shapiq import ExactComputer
 from sklearn.neighbors import KNeighborsClassifier
 
-from shapiq_student.weighted_knn_explainer import KNNExplainer
+from shapiq_student.weighted_knn_explainer import WeightedKNNExplainer
 
 TOLERANCE = 1e-6  # High precision tolerance for exact match
 
@@ -30,7 +30,7 @@ def test_exact_wknn_shapley_matches_shapiq():
     model.fit(X_train, y_train)
 
     # 3. Initialize the WKNN-Shapley explainer with target class fixed
-    explainer = KNNExplainer(model, X_train, y_train, class_index=y_class, K=K)
+    explainer = WeightedKNNExplainer(model, X_train, y_train, class_index=y_class, K=K)
     approx = explainer.explain_instances(x_test)
 
     # 4. Define a Shapley game: utility = 1 if classifier predicts target class, else 0
