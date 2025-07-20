@@ -11,8 +11,6 @@ dependencies = [
     "shapiq>=1.3.0",
 ]
 
-[tool.setuptools]
-packages = ["shapiq_student"]
 
 [dependency-groups]
 test = [
