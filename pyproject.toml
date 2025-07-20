@@ -3,7 +3,7 @@
 [project]
 name = "shapiq-student"
 version = "0.1.0"
-description = "Conditional data imputation using Gaussian Copulas for Shapley value estimation"
+description = "Add your description here"
 requires-python = ">=3.10"
 license = "MIT"
 dependencies = [
