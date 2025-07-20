@@ -28,7 +28,6 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.ifconfig",
     "sphinx.ext.githubpages",
-    "myst_parser",
     "myst_nb",
 ]
 
@@ -39,6 +38,7 @@ myst_enable_extensions = [
     "html_image",
     "linkify",
     "replacements",
+    "linkify",
 ]
 
 

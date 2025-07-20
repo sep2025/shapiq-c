@@ -1,0 +1,424 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Gaussian Conditional Imputer" href="2.1_gaussian_imputer_tutorial.html" /><link rel="prev" title="KNN-Shapley Explainer Demo" href="1.1_1.3_basic_and_weighted_KNN_tutorial.html" />
+
+    <!-- Generated with Sphinx 7.4.7 and Furo 2023.07.26 -->
+        <title>Threshold KNN‑Shapley Explainer - [SEP_SoSe2025 / Gruppe C] Game Theoretic Explainable Artificial Intelligence</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">[SEP_SoSe2025 / Gruppe C] Game Theoretic Explainable Artificial Intelligence</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/SEP_Logo.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">[SEP_SoSe2025 / Gruppe C] Game Theoretic Explainable Artificial Intelligence</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">shapiq_student</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of shapiq_student</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../shapiq_student.html">shapiq_student package</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1.1_1.3_basic_and_weighted_KNN_tutorial.html">KNN-Shapley Explainer Demo</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Threshold KNN‑Shapley Explainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.1_gaussian_imputer_tutorial.html">Gaussian Conditional Imputer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.2_gaussian_copula_tutorial.html">Gaussian Copula Imputer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_subset_finding_tutorial.html">Greedy Coalition Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_subset_finding_tutorial.html#beam-search-coalition-method">Beam Search Coalition Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_subset_finding_tutorial.html#beam-search-coalition-method-with-specified-beam-width">Beam Search Coalition Method with specified beam_width</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_subset_finding_tutorial.html#recursive-greedy-algorithm">Recursive greedy algorithm</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="threshold-knnshapley-explainer">
+<h1>Threshold KNN‑Shapley Explainer<a class="headerlink" href="#threshold-knnshapley-explainer" title="Link to this heading">¶</a></h1>
+<p><em>A hands‑on guide</em></p>
+<p>This notebook shows how to use the <em>Threshold KNN‑Shapley Explainer</em> to attribute predictions to individual training points when you the neighbourhood is restriced by a distance threshold <strong>tau / τ</strong>.<br />
+It complements the basic and weighted KNN explainers and is ideal for situations where “local” influence scores in dense data regions are desired.</p>
+<hr class="docutils" />
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>What problem does “threshold KNN‑Shapley” solve?</p></li>
+<li><p>How is it implemented?</p></li>
+<li><p>Quick‑start: explaining a scikit‑learn model</p></li>
+<li><p>Visual walkthrough on a toy dataset</p></li>
+<li><p>Summary</p></li>
+</ol>
+<p>### 1  What problem does it solve?
+<em>Point Shapley</em> (sometimes called Instance Shapley) scores tell how much training point <strong>i</strong> sways the prediction for test point <strong>x</strong>.</p>
+<p>The threshold variant uses a distance radius <strong>τ</strong> instead of a fixed <strong>k</strong> neighbours.<br />
+Only points with<br />
+$$\left\lVert x_i - x_{\text{test}}\right\rVert \le \tau$$
+can vote in the majority prediction inside every coalition (of training points).</p>
+<p>Realistic use‑cases:</p>
+<ul class="simple">
+<li><p>Local explanation in dense clusters (far‑away outliers won’t influence vote).</p></li>
+<li><p>Streaming data: Future density changes effectively ignored.</p></li>
+<li><p>Fairness audits: Checks if points within a small radius are dominating a decision.</p></li>
+</ul>
+<p>### 2  How does the implementation work?</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">shapiq_student.threshold_knn_explainer</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThresholdKNNExplainer</span>
+<span class="n">help</span><span class="p">(</span><span class="n">ThresholdKNNExplainer</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Exact Shapley: enumerates <em>n_train !</em> permutations, although only feasible up to around 10 points.</p></li>
+<li><p>Only the points inside <strong>τ</strong> count for the majority vote. If no one is inside, payoff is set to 0.</p></li>
+<li><p>Returns an <em>InteractionValues</em> object with: <em>values.shape == (n_train,)  &amp;  index == ‘SV’</em>.</p></li>
+</ul>
+<p>### 3  Quick‑start on Iris
+Below, nine training points from the Iris dataset so that the exact permutation‑based algorithm is still tractable (9 ! ≈ 3.6 × 10⁵).
+This keeps the demo snappy while showing the full, exact computation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_iris</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">RadiusNeighborsClassifier</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">load_iris</span><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Use the first 9 rows (3 from each class) so n_train! is manageable.</span>
+<span class="n">idx_small</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">50</span><span class="p">:</span><span class="mi">53</span><span class="p">,</span> <span class="mi">100</span><span class="p">:</span><span class="mi">103</span><span class="p">]</span>
+<span class="n">X_small</span><span class="p">,</span> <span class="n">y_small</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">idx_small</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">idx_small</span><span class="p">]</span>
+
+<span class="n">tau</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">RadiusNeighborsClassifier</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="n">tau</span><span class="p">)</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_small</span><span class="p">,</span> <span class="n">y_small</span><span class="p">)</span>
+
+<span class="n">x_test</span> <span class="o">=</span> <span class="n">X_small</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.05</span>  <span class="c1"># small perturbation of the first point</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">shapiq_student.threshold_knn_explainer</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThresholdKNNExplainer</span>
+
+<span class="n">expl</span> <span class="o">=</span> <span class="n">ThresholdKNNExplainer</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">clf</span><span class="p">,</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">X_small</span><span class="p">,</span>
+    <span class="n">labels</span><span class="o">=</span><span class="n">y_small</span><span class="p">,</span>
+    <span class="n">tau</span><span class="o">=</span><span class="n">tau</span><span class="p">,</span>           <span class="c1"># Matches the classifier&#39;s radius</span>
+    <span class="n">class_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># If none, explain the model&#39;s predicted class</span>
+<span class="p">)</span>
+<span class="n">shap</span> <span class="o">=</span> <span class="n">expl</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shapley values (length = n_train = 9):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">shap</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Sum of SVs:&quot;</span><span class="p">,</span> <span class="n">shap</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Shapley values (length = n_train = 9):
+[0.333 0.333 0.333 0.    0.    0.    0.    0.    0.   ]
+
+Sum of SVs: 1.0
+</pre></div>
+</div>
+</div>
+</div>
+<p>### 4  Visual walkthrough on a 2‑D toy set
+A minimal example that can be visualized on a canvas.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_moons</span>
+
+<span class="n">X2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">make_moons</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="n">rc</span> <span class="o">=</span> <span class="n">RadiusNeighborsClassifier</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="n">tau</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+
+<span class="n">x_star</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">]])</span>
+<span class="n">expl2</span> <span class="o">=</span> <span class="n">ThresholdKNNExplainer</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">rc</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">X2</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">y2</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="n">tau</span><span class="p">)</span>
+<span class="n">sv</span> <span class="o">=</span> <span class="n">expl2</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">x_star</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+
+<span class="c1"># --- plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;tab:blue&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:orange&quot;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">X2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">y2</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">x_star</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;test point&quot;</span><span class="p">)</span>
+<span class="n">circle</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Circle</span><span class="p">(</span><span class="n">x_star</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tau</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">circle</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">x_i</span><span class="p">,</span> <span class="n">sv_i</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">sv</span><span class="p">)):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x_i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">x_i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mf">0.02</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sv_i</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Instance Shapley values inside radius τ&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/f161c406307db14c69508f097ca7222de7e9084f04897f871808cb74e06ff79e.png" src="../_images/f161c406307db14c69508f097ca7222de7e9084f04897f871808cb74e06ff79e.png" />
+</div>
+</div>
+<p>The blue dots vote for the test point’s class, while the orange dots vote against it.<br />
+As this is concerns a threshold, only the three dots inside the dashed radius of <strong>τ = 0.8</strong> are seen.<br />
+The two blue points raise the vote to the target class, so each gets a positive Shapley share of <strong>0.5</strong>.<br />
+The lone orange neighbour never secures the majority, so its Shapley value is <strong>0</strong>.</p>
+<section id="summary">
+<h3>5 Summary<a class="headerlink" href="#summary" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>What was built</strong> – A Threshold KNN‑Shapley explainer that attributes each training point’s influence on a prediction, but only counts neighbours within a distance <strong>τ</strong>.</p></li>
+<li><p><strong>How it works</strong> – Enumerates all permutations of the training set (exact Shapley) and evaluates a 0/1 payoff based on the majority vote inside the radius.</p></li>
+<li><p><strong>Key takeaway</strong> – Points inside τ share the Shapley credit; points outside get zero. Adjusting τ zooms the explanation lens in or out.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="2.1_gaussian_imputer_tutorial.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Gaussian Conditional Imputer</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="1.1_1.3_basic_and_weighted_KNN_tutorial.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">KNN-Shapley Explainer Demo</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Threshold KNN‑Shapley Explainer</a><ul>
+<li><a class="reference internal" href="#table-of-contents">Table of Contents</a><ul>
+<li><a class="reference internal" href="#summary">5 Summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>
