@@ -134,8 +134,9 @@ def greedy_coalition(
     interaction_values: InteractionValues, coalition_size: int
 ) -> InteractionValues:
     """Find the maximum and minimum coalitions of a given size using a greedy approach.
+
     This function is a wrapper for `greedy_coalition_call` and simplifies usage by requiring only two parameters.
-    
+
     Parameters:
         interaction_values: The InteractionValues object from which the coalitions are to be determined.
         coalition_size: The desired size of the coalitions.
@@ -187,6 +188,7 @@ def beam_search_coalition_call(
     Raises:
         ValueError: If coalition_size is smaller than 1 or larger than the number of players.
         TypeError: If interaction_values is not of type InteractionValues.
+
     """
     check_edge_cases(interaction_values, coalition_size)
     N = list(range(interaction_values.n_players))
@@ -234,6 +236,7 @@ def beam_search_coalition(
     interaction_values: InteractionValues, coalition_size: int
 ) -> InteractionValues:
     """Find the maximum and minimum coalitions of a given size using beam search with a fixed beam width of 3.
+
     This wrapper simplifies usage by requiring only two parameters and internally calls beam_search_coalition_call.
 
     Parameters:
@@ -366,7 +369,7 @@ def recursive_greedy_coalition(
 
     Returns:
         The InteractionValues object of the maximum and minimum coalition.
-        
+
     Raises:
         ValueError: If coalition_size is smaller than 1 or larger than the number of players.
         TypeError: If interaction_values is not of type InteractionValues.
@@ -397,7 +400,7 @@ def recursive_greedy_min_coalition(
 
     Returns:
         The InteractionValues object of the minimum coalition.
-        
+
     Raises:
         ValueError: If coalition_size is smaller than 1 or larger than the number of players.
         TypeError: If interaction_values is not of type InteractionValues.
@@ -426,7 +429,7 @@ def recursive_greedy_max_coalition(
 
     Returns:
         The InteractionValues object of the maximum coalition.
-        
+
     Raises:
         ValueError: If coalition_size is smaller than 1 or larger than the number of players.
         TypeError: If interaction_values is not of type InteractionValues.
