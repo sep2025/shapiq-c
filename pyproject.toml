@@ -124,4 +124,5 @@ exclude_lines = [
     "if TYPE_CHECKING",
 ]
 
-# TODO(mmschlk): add mypy or ty typing configuration below
+[tool.mypy]
+ignore_missing_imports = true
