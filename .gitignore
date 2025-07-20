@@ -266,3 +266,5 @@ docs/source/api
 .editorconfig
 
 .venv/
+
+.DS_Store
