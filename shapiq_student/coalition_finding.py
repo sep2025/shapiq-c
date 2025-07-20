@@ -134,7 +134,7 @@ def greedy_coalition(
     interaction_values: InteractionValues, coalition_size: int
 ) -> InteractionValues:
     """Find the maximum and minimum coalitions of a given size using a greedy approach.
-This function is a wrapper for `greedy_coalition_call` and simplifies usage by requiring only two parameters.
+    This function is a wrapper for `greedy_coalition_call` and simplifies usage by requiring only two parameters.
     
     Parameters:
         interaction_values: The InteractionValues object from which the coalitions are to be determined.
@@ -233,7 +233,7 @@ def beam_search_coalition_call(
 def beam_search_coalition(
     interaction_values: InteractionValues, coalition_size: int
 ) -> InteractionValues:
-    """Find the maximum and minimum coalitions of a given size using beam search with a fixed beam width of 3. 
+    """Find the maximum and minimum coalitions of a given size using beam search with a fixed beam width of 3.
     This wrapper simplifies usage by requiring only two parameters and internally calls beam_search_coalition_call.
 
     Parameters:
