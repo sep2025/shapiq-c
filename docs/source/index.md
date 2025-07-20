@@ -12,3 +12,21 @@ In dieser Dokumentation finden Sie eine Übersicht über das [Github repository]
 
 modules
 ```
+
+```{toctree}
+:maxdepth: 2
+:caption: Tutorials
+
+notebooks/1.1_1.3_basic_and_weighted_KNN_tutorial.ipynb
+notebooks/1.2_threshold_KNN_tutorial.ipynb
+notebooks/2.1_gaussian_imputer_tutorial.ipynb
+notebooks/2.2_gaussian_copula_tutorial.ipynb
+notebooks/3_subset_finding_tutorial.ipynb
+```
+
+```{toctree}
+:maxdepth: 2
+:caption: Runtime Analysis
+
+notebooks/4_Laufzeitanalyse_shapiq_shap.ipynb <Runtime Analysis: shapiq vs shap>
+```

@@ -29,6 +29,7 @@ extensions = [
     "sphinx.ext.ifconfig",
     "sphinx.ext.githubpages",
     "myst_parser",
+    "myst_nb",
 ]
 
 myst_enable_extensions = [

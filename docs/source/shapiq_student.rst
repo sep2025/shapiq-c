@@ -1,62 +1,46 @@
-shapiq\_student package
+shapiq_student package
 =======================
 
 Submodules
 ----------
 
-shapiq\_student.basic\_knn\_explainer module
---------------------------------------------
+1. KNN-Shapley Explainers
+--------------------------
 
 .. automodule:: shapiq_student.basic_knn_explainer
    :members:
    :show-inheritance:
    :undoc-members:
 
-
-shapiq\_student.gaussian\_copula\_imputer module
-------------------------------------------------
-
-.. automodule:: shapiq_student.gaussian_copula_imputer
+.. automodule:: shapiq_student.threshold_knn_explainer
    :members:
    :show-inheritance:
    :undoc-members:
-
-shapiq\_student.gaussian\_imputer module
-----------------------------------------
-
-.. automodule:: shapiq_student.gaussian_imputer
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-shapiq\_student.subset\_finding module
---------------------------------------
-
-.. automodule:: shapiq_student.subset_finding
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-shapiq\_student.threshold\_knn\_shapley\_explainer module
----------------------------------------------------------
-
-.. automodule:: shapiq_student.threshold_knn_shapley_explainer
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-shapiq\_student.weighted\_knn\_explainer module
------------------------------------------------
 
 .. automodule:: shapiq_student.weighted_knn_explainer
    :members:
    :show-inheritance:
    :undoc-members:
 
-Module contents
----------------
+2. Conditional Imputers
+------------------------
 
-.. automodule:: shapiq_student
+.. automodule:: shapiq_student.gaussian_imputer
+   :members:
+   :special-members: __call__
+   :show-inheritance:
+   :undoc-members:
+
+.. automodule:: shapiq_student.gaussian_copula_imputer
    :members:
    :show-inheritance:
    :undoc-members:
+
+3. Coalition Finding
+---------------------
+
+.. automodule:: shapiq_student.coalition_finding
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
