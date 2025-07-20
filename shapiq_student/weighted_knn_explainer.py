@@ -54,6 +54,7 @@ class KNNExplainer(Explainer):
         self.N = len(self.X_train)
         self.mode = "weighted" if model.weights == "distance" else "normal"
         self.approx_M = approx_M
+        self.top_S: list[int] = []
 
         if self.X_train.shape[0] != self.y_train.shape[0]:
             msg = "Mismatch between data and labels."
