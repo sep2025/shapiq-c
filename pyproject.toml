@@ -1,11 +1,13 @@
 # TODO(mmschlk): add your project name and description here
 # uncomment the following line and incpororate the build system
-# [build-system]
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "shapiq-student"
 version = "0.1.0"
-description = "Add your description here"
+description = "Conditional data imputation using Gaussian Copulas for Shapley value estimation"
 requires-python = ">=3.10"
 license = "MIT"
 dependencies = [
@@ -13,6 +15,8 @@ dependencies = [
     "shapiq>=1.2.3",
 ]
 
+[tool.setuptools]
+packages = ["shapiq_student"]
 
 [dependency-groups]
 test = [
