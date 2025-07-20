@@ -24,7 +24,7 @@ lint = [
 ]
 docs = [
     "sphinx>=6.0",
-    "myst-parser",
+    "myst-parser[linkify]",
     "furo"
 ]
 dev = [
