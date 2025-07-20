@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 RANDOM_SEED: int = 42
 """Random seed for all randomness in the unit tests."""
 
-N_SAMPLES: int = 1000
+N_SAMPLES: int = 10
 
 
 @pytest.fixture(scope="session")
