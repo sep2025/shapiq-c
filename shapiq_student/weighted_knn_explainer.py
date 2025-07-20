@@ -141,7 +141,9 @@ class WeightedKNNExplainer(Explainer):
                     S_list = list(S)
                     S_plus = [*S_list, i]
 
-                    top_S: list[int] = np.argsort(dists[S_list])[: min(K, len(S_list))].tolist() if S_list else []
+                    top_S: list[int] = (
+                        np.argsort(dists[S_list])[: min(K, len(S_list))].tolist() if S_list else []
+                    )
                     top_S_plus = np.argsort(dists[S_plus])[: min(K, len(S_plus))]
 
                     vote_S = np.sum(signed_weights[S_list][top_S]) if S_list else 0.0

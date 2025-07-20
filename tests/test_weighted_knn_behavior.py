@@ -10,7 +10,7 @@ from __future__ import annotations
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 
-from shapiq_student.weighted_knn_explainer import KNNExplainer
+from shapiq_student.weighted_knn_explainer import WeightedKNNExplainer
 
 TOLERANCE = 1e-6
 POSITIVE_INFLUENCE_THRESHOLD = 0.5
@@ -26,7 +26,7 @@ def test_weighted_knn_explainer_runs():
     model = KNeighborsClassifier(n_neighbors=2, weights="distance")
     model.fit(X_train, y_train)
 
-    explainer = KNNExplainer(model=model, data=X_train, labels=y_train, class_index=0)
+    explainer = WeightedKNNExplainer(model=model, data=X_train, labels=y_train, class_index=0)
     explanation = explainer.explain_instances(x_test)
 
     assert explanation is not None
@@ -44,7 +44,7 @@ def test_symmetry():
 
     model = KNeighborsClassifier(n_neighbors=2, weights="distance")
     model.fit(X, y)
-    explainer = KNNExplainer(model, X, y)
+    explainer = WeightedKNNExplainer(model, X, y)
     values = explainer.explain_instances(x_test).values
 
     assert np.allclose(values[0], values[1], atol=TOLERANCE), f"Symmetry violated: {values}"
@@ -58,7 +58,7 @@ def test_distance_influence():
 
     model = KNeighborsClassifier(n_neighbors=2, weights="distance")
     model.fit(X, y)
-    explainer = KNNExplainer(model, X, y, class_index=0)
+    explainer = WeightedKNNExplainer(model, X, y, class_index=0)
     values = explainer.explain_instances(x_test).values
 
     assert values[0] > values[1], f"Distance influence violated: {values}"
@@ -72,7 +72,7 @@ def test_balance_positive_vs_negative():
 
     model = KNeighborsClassifier(n_neighbors=2, weights="distance")
     model.fit(X, y)
-    explainer = KNNExplainer(model, X, y, class_index=1)
+    explainer = WeightedKNNExplainer(model, X, y, class_index=1)
     values = explainer.explain_instances(x_test).values
 
     assert values[0] > POSITIVE_INFLUENCE_THRESHOLD, (

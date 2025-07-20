@@ -10,7 +10,7 @@ import numpy as np
 import pytest
 from sklearn.neighbors import KNeighborsClassifier
 
-from shapiq_student.weighted_knn_explainer import KNNExplainer
+from shapiq_student.weighted_knn_explainer import WeightedKNNExplainer
 
 # Constants to avoid magic numbers in tests
 THRESHOLD_POSITIVE_INFLUENCE = 0.5
@@ -37,7 +37,7 @@ def test_invalid_weights():
     X = np.array([[0], [1]])
     y = np.array([0, 1])
     with pytest.raises(ValueError, match=".*weights are supported.*"):
-        KNNExplainer(model=model, data=X, labels=y)
+        WeightedKNNExplainer(model=model, data=X, labels=y)
 
 
 def test_mismatched_data_labels():
@@ -45,7 +45,7 @@ def test_mismatched_data_labels():
     model = KNeighborsClassifier(n_neighbors=2, weights="distance")
     model.fit([[0], [1]], [0, 1])
     with pytest.raises(ValueError, match=".*data and labels.*"):
-        KNNExplainer(model=model, data=[[0], [1]], labels=[0])  # Too few labels
+        WeightedKNNExplainer(model=model, data=[[0], [1]], labels=[0])  # Too few labels
 
 
 def test_mode_assignment():
@@ -57,8 +57,8 @@ def test_mode_assignment():
     model_w.fit(X, y)
     model_u.fit(X, y)
 
-    e1 = KNNExplainer(model_w, X, y)
-    e2 = KNNExplainer(model_u, X, y)
+    e1 = WeightedKNNExplainer(model_w, X, y)
+    e2 = WeightedKNNExplainer(model_u, X, y)
     assert e1.mode == "weighted"
     assert e2.mode == "normal"
 
@@ -70,7 +70,7 @@ def test_explain_instances_with_tie():
     x_test = np.array([[2.0]])  # Equidistant to points at indices 1 and 2
     model = KNeighborsClassifier(n_neighbors=2, weights="distance")
     model.fit(X, y)
-    explainer = KNNExplainer(model, X, y, class_index=1)
+    explainer = WeightedKNNExplainer(model, X, y, class_index=1)
     values = explainer.explain_instances(x_test).values
 
     assert values.shape[0] == EXPECTED_LENGTH
@@ -87,7 +87,7 @@ def test_explain_returns_real_values():
     x = np.array([[0.5, 0.5]])
     model = KNeighborsClassifier(n_neighbors=1, weights="distance")
     model.fit(X, y)
-    explainer = KNNExplainer(model, X, y, class_index=1)
+    explainer = WeightedKNNExplainer(model, X, y, class_index=1)
     result = explainer.explain(x)
 
     assert np.linalg.norm(result.values) > MIN_NORM
@@ -101,7 +101,7 @@ def test_k_equals_n():
     x_test = np.array([[1.0]])
     model = KNeighborsClassifier(n_neighbors=3, weights="distance")
     model.fit(X, y)
-    explainer = KNNExplainer(model, X, y, class_index=1, K=3)
+    explainer = WeightedKNNExplainer(model, X, y, class_index=1, K=3)
     values = explainer.explain_instances(x_test).values
 
     assert len(values) == EXPECTED_VALUES_3
@@ -114,7 +114,7 @@ def test_k_equals_1():
     x_test = np.array([[1.0]])
     model = KNeighborsClassifier(n_neighbors=1, weights="distance")
     model.fit(X, y)
-    explainer = KNNExplainer(model, X, y, class_index=1, K=1)
+    explainer = WeightedKNNExplainer(model, X, y, class_index=1, K=1)
     values = explainer.explain_instances(x_test).values
 
     assert len(values) == EXPECTED_VALUES_2
@@ -123,7 +123,7 @@ def test_k_equals_1():
 def test_explain_multiple_instances():
     """Check that explain handles multiple test inputs (batch mode)."""
     model, X, y, _ = get_basic_model_and_data()
-    explainer = KNNExplainer(model, X, y, class_index=0)
+    explainer = WeightedKNNExplainer(model, X, y, class_index=0)
     x_batch = np.array([[1.1], [1.2], [1.3]])
     result = explainer.explain(x_batch)
 
@@ -133,7 +133,7 @@ def test_explain_multiple_instances():
 def test_explain_instances_multiple_inputs():
     """Check that explain_instances supports multiple test points."""
     model, X, y, _ = get_basic_model_and_data()
-    explainer = KNNExplainer(model, X, y, class_index=0)
+    explainer = WeightedKNNExplainer(model, X, y, class_index=0)
     x_batch = np.array([[1.1], [1.2]])
     result = explainer.explain_instances(x_batch)
 
