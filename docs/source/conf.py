@@ -32,14 +32,22 @@ extensions = [
 ]
 
 myst_enable_extensions = [
-    "colon_fence",
     "deflist",
     "html_admonition",
     "html_image",
     "linkify",
     "replacements",
-    "linkify",
+    "dollarmath",
+    "amsmath",
+    "colon_fence",
 ]
+
+mathjax3_config = {
+    "tex": {
+        "inlineMath": [["$", "$"], ["\\(", "\\)"]],
+        "displayMath": [["$$", "$$"], ["\\[", "\\]"]],
+    }
+}
 
 
 templates_path = ["_templates"]
