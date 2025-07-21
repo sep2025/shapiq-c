@@ -180,7 +180,7 @@ class ThresholdKNNExplainer(Explainer):
         if self.class_index is not None:
             target_class = self.class_index
         elif isinstance(self.model, _Predictor):
-            x_test_2d = x_test[np.newaxis, :]          # ndarray, not list
+            x_test_2d = x_test[np.newaxis, :]  # ndarray, not list
             target_class = self.model.predict(x_test_2d)[0]
         else:  # fall back to callable game interface
             x_test_2d = x_test[np.newaxis, :]
