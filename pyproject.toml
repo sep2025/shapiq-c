@@ -102,6 +102,8 @@ exclude = [
     "N",  # type hints are excludes in tests
 ]
 "*.ipynb" = ["ALL"]
+".html" = ["ALL"]
+".js" = ["ALL"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
