@@ -82,11 +82,12 @@ def test_threshold_knn_error_paths() -> None:
     with pytest.raises(ValueError, match="empty iterable"):
         _mode([])
 
+
 def test_threshold_knn_additional_paths() -> None:
     """Cover the remaining branches (≈5 lines) to push module coverage ≥ 92 %."""
-    X = np.array([[0.0], [2.0]])        # far apart
+    X = np.array([[0.0], [2.0]])  # far apart
     y = np.array([0, 1])
-    tau = 0.1                           # so *no* neighbour falls inside radius
+    tau = 0.1  # so *no* neighbour falls inside radius
     clf = RadiusNeighborsClassifier(radius=tau).fit(X, y)
 
     explainer = ThresholdKNNExplainer(model=clf, data=X, labels=y, tau=tau, class_index=0)
@@ -105,8 +106,10 @@ def test_threshold_knn_additional_paths() -> None:
     with pytest.raises(TypeError, match="may not be None"):
         explainer.explain(None)  # type: ignore[arg-type]
 
+
 def test_threshold_knn_rejects_invalid_model() -> None:
     """*model* must be a (Radius)KNeighborsClassifier, anything else raises."""
+
     class Dummy:  # minimal, has neither predict nor radius
         pass
 
