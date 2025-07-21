@@ -8,11 +8,11 @@ repos:
       - id: check-yaml
       - id: check-toml
       - id: end-of-file-fixer
-        exclude: '\\.(ipynb|html|js)$'
+        exclude: '.*\.(ipynb|html|js)$'
       - id: trailing-whitespace
-        exclude: '\\.(ipynb|html|js)$'
+        exclude: '.*\.(ipynb|html|js)$'
       - id: mixed-line-ending
-        exclude: '\\.(ipynb|html|js)$'
+        exclude: '.*\.(ipynb|html|js)$'
       - id: check-merge-conflict
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -20,13 +20,13 @@ repos:
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix, --no-cache, --verbose]
-        exclude: '\\.(ipynb|html|js)$'
+        exclude: '.*\.(ipynb|html|js)$'
       - id: ruff-format
         args: [--verbose]
-        exclude: '\\.(ipynb|html|js)$'
+        exclude: '.*\.(ipynb|html|js)$'
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.9.0
     hooks:
       - id: mypy
-        exclude: '\\.(ipynb|html|js)$'
+        exclude: '.*\.(ipynb|html|js)$'
