@@ -9,13 +9,15 @@ from shapiq_student.gaussian_copula_imputer import GaussianCopulaImputer
 
 class DummyModel:
     """A dummy model for testing purposes."""
+
     def __call__(self, X: np.ndarray) -> np.ndarray:
         """Dummy model that sums the features."""
-        return np.sum(X, axis=1)  #callable
+        return np.sum(X, axis=1)  # callable
 
     def predict(self, X: np.ndarray) -> np.ndarray:
         """Dummy predict method that sums the features."""
         return np.sum(X, axis=1)
+
 
 def test_init_gaussian_copula_imputer():
     """Test Initialization of the GaussianCopulaImputer."""
@@ -25,11 +27,14 @@ def test_init_gaussian_copula_imputer():
 
     imputer = GaussianCopulaImputer(model=model, data=data)
 
-    assert isinstance(imputer, GaussianCopulaImputer), "Should be an instance of GaussianCopulaImputer"
+    assert isinstance(imputer, GaussianCopulaImputer), (
+        "Should be an instance of GaussianCopulaImputer"
+    )
     assert imputer.model is model, "Model should be set correctly"
     assert imputer.data.shape == (100, 5), "Data shape should be (100, 5)"
     assert imputer.transformed_data is None, "transformed_data should be None initially"
     assert imputer.correlation is None, "correlation should be None initially"
+
 
 def test_fit_gaussian_copula_imputer():
     """Test the fit method of the GaussianCopulaImputer."""
@@ -38,6 +43,7 @@ def test_fit_gaussian_copula_imputer():
     model = DummyModel()
     imputer = GaussianCopulaImputer(model=model, data=data)
     imputer.fit(data)  # fit should complete without error
+
 
 def test_impute_output_shape_single_missing():
     """Test the impute method with a single missing value."""
@@ -53,7 +59,7 @@ def test_impute_output_shape_single_missing():
     x_missing = imputer.impute(x_known, known_idx, missing_idx)
 
     assert isinstance(x_missing, np.ndarray), "Imputed value should be a numpy array"
-    assert x_missing.shape == (1, )
+    assert x_missing.shape == (1,)
 
 
 def test_impute_multiple_missing_values():
@@ -72,6 +78,7 @@ def test_impute_multiple_missing_values():
     assert isinstance(x_missing, np.ndarray), "Imputed values should be a numpy array"
     assert x_missing.shape == (3,), "Should return three imputed values"
 
+
 def test_call_gaussian_copula_imputer():
     """Test the call method of the GaussianCopulaImputer."""
     rng = np.random.default_rng(0)
@@ -88,6 +95,7 @@ def test_call_gaussian_copula_imputer():
     assert isinstance(predictions, np.ndarray), "Result should be a numpy array"
     assert predictions.shape == (10,), "Should return predictions for each coalition"
     assert np.all(np.isfinite(predictions)), "All predictions should be finite numbers"
+
 
 def test_get_x_property():
     """Test the x property of the GaussianCopulaImputer."""
@@ -110,11 +118,12 @@ def test_call_with_empty_coalition():
     x_explain = data[0:1, :]  # Known features
     imputer.fit(x_explain)
 
-    coalitions = np.array([[0, 0, 0]]) # Empty coalition
+    coalitions = np.array([[0, 0, 0]])  # Empty coalition
     result = imputer(coalitions)
 
     assert result.shape == (1,), "Should return a single prediction for the coalition"
     assert result[0] == 0.0, "Prediction for empty coalition should be 0.0"
+
 
 def test_dummy_model_predict_directly():
     """Test that DummyModel.predict works."""
@@ -126,4 +135,6 @@ def test_dummy_model_predict_directly():
     predictions = model.predict(data)
 
     assert predictions.shape == (10,), "Predictions shape should match number of samples"
-    assert np.allclose(predictions, np.sum(data, axis=1)), "Predictions should match the sum of features"
+    assert np.allclose(predictions, np.sum(data, axis=1)), (
+        "Predictions should match the sum of features"
+    )

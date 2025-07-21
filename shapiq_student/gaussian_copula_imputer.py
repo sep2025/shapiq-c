@@ -27,8 +27,12 @@ class GaussianCopulaImputer(Imputer):
     Note:
         - This method is non-parametric and handles non-gaussian marginals by transforming thee marginals.
     """
+
     def __init__(
-        self, model: Callable[[np.ndarray], np.ndarray] | None = None, data: np.ndarray | None = None, x: np.ndarray | None = None
+        self,
+        model: Callable[[np.ndarray], np.ndarray] | None = None,
+        data: np.ndarray | None = None,
+        x: np.ndarray | None = None,
     ) -> None:
         """Initializes the GaussianCopulaImputer.
 
@@ -112,10 +116,12 @@ class GaussianCopulaImputer(Imputer):
             np.ndarray: The imputed values for the missing features.
         """
         # Convert values to z-space
-        z_known = np.array([
-            norm.ppf(np.clip(self.ecdfs[idx](x_known[i]), 1e-6, 1 - 1e-6))
-            for i, idx in enumerate(known_idx)
-        ])
+        z_known = np.array(
+            [
+                norm.ppf(np.clip(self.ecdfs[idx](x_known[i]), 1e-6, 1 - 1e-6))
+                for i, idx in enumerate(known_idx)
+            ]
+        )
 
         if self.correlation is None:
             raise ValueError

@@ -121,7 +121,7 @@ def test_call_gaussian_imputer():
     output = imputer(coalitions=coalitions_with_empty)
 
     assert isinstance(output, np.ndarray), "Output should be a numpy array."
-    assert output.shape == (n_coalitions+1,), f"Output shape should be ({n_coalitions+1},)."
+    assert output.shape == (n_coalitions + 1,), f"Output shape should be ({n_coalitions + 1},)."
     assert np.all(np.isfinite(output)), "Output should be finite."
     assert np.issubdtype(output.dtype, np.number), "Output should be numeric."
 
@@ -140,9 +140,7 @@ def test_sample_conditional_gaussian():
 
     n_samples = 10000
 
-    imputer = GaussianImputer(
-        model=dummy_model, data=sample_data, sample_size=n_samples
-    )
+    imputer = GaussianImputer(model=dummy_model, data=sample_data, sample_size=n_samples)
     samples, mu_cond, sigma_cond = imputer.sample_conditional_gaussian(
         sample_data, cond_idx, cond_values, n_samples=n_samples, random_state=123
     )
